@@ -11,6 +11,10 @@
         <nav class="nav">
             <a href="index.html" class="active">Quizzes</a>
             <a href="notes.html">Study Notes</a>
+            <button class="theme-toggle" id="theme-toggle">
+                <span class="icon">☾</span>
+                <span class="text">Dark</span>
+            </button>
         </nav>
 
         <header>
@@ -109,6 +113,7 @@
         </footer>
     </div>
 
+    <script src="js/theme.js"></script>
     <script>
         function startQuiz(quizNumber) {
             window.location.href = `quiz.html?quiz=${quizNumber}`;
