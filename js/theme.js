@@ -2,9 +2,9 @@
 (function() {
     const THEME_KEY = 'quiz-theme';
 
-    // Get saved theme or default to light
+    // Get saved theme or default to dark
     function getSavedTheme() {
-        return localStorage.getItem(THEME_KEY) || 'light';
+        return localStorage.getItem(THEME_KEY) || 'dark';
     }
 
     // Apply theme to document
