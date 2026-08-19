@@ -25,7 +25,8 @@ const itcQuizData = {
 
 // ComProg1 Quiz titles
 const comprog1QuizTitles = {
-    1: "ComProg1: Variables, Operators & Functions"
+    1: "ComProg1: Variables, Operators & Functions",
+    2: "ComProg1: Variables, Operators & Functions (Set 2)"
 };
 
 // State variables
@@ -88,10 +89,13 @@ function initComprog1Quiz() {
     // Set quiz title
     document.getElementById('quiz-title').textContent = comprog1QuizTitles[currentQuiz] || 'ComProg1 Quiz';
 
-    // Get questions from comprog1Questions object
-    if (typeof comprog1Questions !== 'undefined') {
+    // Get questions based on quiz number
+    if (currentQuiz === 1 && typeof comprog1Questions !== 'undefined') {
         test1Questions = shuffleArray([...comprog1Questions.test1]);
         test2Questions = shuffleArray([...comprog1Questions.test2]);
+    } else if (currentQuiz === 2 && typeof comprog1Quiz2Questions !== 'undefined') {
+        test1Questions = shuffleArray([...comprog1Quiz2Questions.test1]);
+        test2Questions = shuffleArray([...comprog1Quiz2Questions.test2]);
     } else {
         test1Questions = [];
         test2Questions = [];
@@ -109,7 +113,7 @@ function initComprog1Quiz() {
     test1Answers = [];
     answered = false;
 
-    // Update total questions display (Test 1 has 30 questions)
+    // Update total questions display
     document.getElementById('total-questions').textContent = questions.length;
 
     // Show first question
