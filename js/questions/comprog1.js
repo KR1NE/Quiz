@@ -1,12 +1,12 @@
-// ComProg1 Quiz: Variables, Data Types, Operators, Functions & Classes
-// Test 1: Multiple Choice (30 Questions) - Items 1-30
-// Test 2: Identification (10 Questions) - Items 31-40
+// ComProg1 Quiz 1: Variables, Data Types, Operators, Functions & Classes
+// Test 1: Multiple Choice (20 Questions) - Items 1-20
+// Test 2: Identification (20 Questions) - Items 21-40
 
 // ==========================================
-// TEST 1: MULTIPLE CHOICE (30 Questions)
+// TEST 1: MULTIPLE CHOICE (20 Questions)
 // ==========================================
 const comprog1Test1 = [
-    // Identifiers (5 questions)
+    // Identifiers (4 questions)
     {
         type: "multiple-choice",
         question: "Which of the following is a VALID identifier in C++?",
@@ -32,23 +32,12 @@ const comprog1Test1 = [
     },
     {
         type: "multiple-choice",
-        question: "Why is 'int' an invalid identifier name?",
-        options: [
-            "It is a reserved keyword",
-            "It starts with a lowercase letter",
-            "It contains only 3 characters",
-            "It contains a vowel"
-        ],
-        answer: "It is a reserved keyword"
-    },
-    {
-        type: "multiple-choice",
         question: "C++ identifiers are:",
         options: ["Case-sensitive", "Case-insensitive", "Only uppercase", "Only lowercase"],
         answer: "Case-sensitive"
     },
 
-    // Data Types (5 questions)
+    // Data Types (4 questions)
     {
         type: "multiple-choice",
         question: "Which data type is used to store true or false values?",
@@ -73,14 +62,8 @@ const comprog1Test1 = [
         options: ["4 bytes", "2 bytes", "1 byte", "8 bytes"],
         answer: "4 bytes"
     },
-    {
-        type: "multiple-choice",
-        question: "What is the byte size of a 'char' data type?",
-        options: ["1 byte", "2 bytes", "4 bytes", "8 bytes"],
-        answer: "1 byte"
-    },
 
-    // Variables and Constants (5 questions)
+    // Variables and Constants (4 questions)
     {
         type: "multiple-choice",
         question: "What is the correct syntax to declare a constant in C++?",
@@ -120,19 +103,8 @@ const comprog1Test1 = [
         options: ["int count = 0;", "int count;", "count = 0;", "integer count = 0;"],
         answer: "int count = 0;"
     },
-    {
-        type: "multiple-choice",
-        question: "What is the purpose of the 'const' keyword?",
-        options: [
-            "To create a variable whose value cannot be changed",
-            "To create a variable that must be changed",
-            "To define a function",
-            "To declare a class"
-        ],
-        answer: "To create a variable whose value cannot be changed"
-    },
 
-    // Arithmetic Operators (5 questions)
+    // Arithmetic Operators (4 questions)
     {
         type: "multiple-choice",
         question: "What is the result of 17 % 5 in C++?",
@@ -153,23 +125,12 @@ const comprog1Test1 = [
     },
     {
         type: "multiple-choice",
-        question: "What does the modulo operator (%) return?",
-        options: [
-            "The remainder after division",
-            "The quotient",
-            "The product",
-            "The difference"
-        ],
-        answer: "The remainder after division"
-    },
-    {
-        type: "multiple-choice",
         question: "Which has the highest precedence in C++?",
         options: ["Parentheses ()", "Multiplication *", "Addition +", "Assignment ="],
         answer: "Parentheses ()"
     },
 
-    // Prefix vs Postfix Increment (5 questions)
+    // Prefix/Postfix and Functions (4 questions)
     {
         type: "multiple-choice",
         question: "If x = 5, what is the value of y after: y = x++;",
@@ -184,65 +145,23 @@ const comprog1Test1 = [
     },
     {
         type: "multiple-choice",
-        question: "What is the main difference between ++x (prefix) and x++ (postfix)?",
-        options: [
-            "Prefix increments before using; postfix uses then increments",
-            "They are exactly the same",
-            "Prefix is for integers; postfix is for doubles",
-            "Postfix increments before using; prefix uses then increments"
-        ],
-        answer: "Prefix increments before using; postfix uses then increments"
-    },
-    {
-        type: "multiple-choice",
-        question: "If x = 10, what is the value of x after: x--;",
-        options: ["9", "10", "11", "0"],
-        answer: "9"
-    },
-    {
-        type: "multiple-choice",
-        question: "What is the output of: int x = 3; cout << x++ << ++x;",
-        options: ["35", "34", "44", "33"],
-        answer: "35"
-    },
-
-    // Functions and Headers (5 questions)
-    {
-        type: "multiple-choice",
         question: "Which header file is required to use sqrt() and pow()?",
         options: ["<cmath>", "<iostream>", "<string>", "<cstdlib>"],
         answer: "<cmath>"
     },
     {
         type: "multiple-choice",
-        question: "What does a void function return?",
-        options: ["Nothing", "Zero", "An empty string", "Null"],
-        answer: "Nothing"
-    },
-    {
-        type: "multiple-choice",
         question: "What is the result of pow(2, 3)?",
         options: ["8", "6", "5", "9"],
         answer: "8"
-    },
-    {
-        type: "multiple-choice",
-        question: "What function reads an entire line of input including spaces?",
-        options: ["getline()", "cin >>", "read()", "scanf()"],
-        answer: "getline()"
-    },
-    {
-        type: "multiple-choice",
-        question: "What is the result of sqrt(25)?",
-        options: ["5", "25", "12.5", "625"],
-        answer: "5"
     }
 ];
 
 // ==========================================
-// TEST 2: IDENTIFICATION (10 Questions)
+// TEST 2: IDENTIFICATION (20 Questions)
 // ==========================================
 const comprog1Test2 = [
+    // Escape Sequences (4 questions)
     {
         type: "identification",
         question: "What escape sequence is used to create a new line?",
@@ -255,6 +174,18 @@ const comprog1Test2 = [
     },
     {
         type: "identification",
+        question: "What escape sequence prints a backslash character?",
+        answer: ["\\\\", "backslash"]
+    },
+    {
+        type: "identification",
+        question: "What escape sequence prints a single quote?",
+        answer: ["\\'", "single quote", "apostrophe"]
+    },
+
+    // I/O Objects (4 questions)
+    {
+        type: "identification",
         question: "What C++ object is used to receive input from the keyboard?",
         answer: ["cin", "CIN", "Cin"]
     },
@@ -265,14 +196,38 @@ const comprog1Test2 = [
     },
     {
         type: "identification",
-        question: "What function returns the square root of a number? (function name only)",
-        answer: ["sqrt", "SQRT", "Sqrt"]
+        question: "What manipulator inserts a newline and flushes the buffer?",
+        answer: ["endl", "ENDL", "Endl"]
     },
     {
         type: "identification",
-        question: "What function raises a number to a power? (function name only)",
-        answer: ["pow", "POW", "Pow"]
+        question: "What header file is needed to use cin and cout? (without angle brackets)",
+        answer: ["iostream", "IOSTREAM", "Iostream"]
     },
+
+    // Functions (4 questions)
+    {
+        type: "identification",
+        question: "What function returns the square root of a number?",
+        answer: ["sqrt", "sqrt()", "SQRT", "Sqrt"]
+    },
+    {
+        type: "identification",
+        question: "What function raises a number to a power?",
+        answer: ["pow", "pow()", "POW", "Pow"]
+    },
+    {
+        type: "identification",
+        question: "What function returns the absolute value of a number?",
+        answer: ["abs", "abs()", "ABS", "Abs", "fabs"]
+    },
+    {
+        type: "identification",
+        question: "What function reads an entire line including spaces?",
+        answer: ["getline", "getline()", "Getline", "GETLINE"]
+    },
+
+    // String and Data Types (4 questions)
     {
         type: "identification",
         question: "What method returns the number of characters in a string object?",
@@ -280,9 +235,21 @@ const comprog1Test2 = [
     },
     {
         type: "identification",
-        question: "What header file is needed to use cin and cout? (without angle brackets)",
-        answer: ["iostream", "IOSTREAM", "Iostream"]
+        question: "What operator is used to concatenate strings?",
+        answer: ["+", "plus", "addition"]
     },
+    {
+        type: "identification",
+        question: "What data type stores whole numbers?",
+        answer: ["int", "INT", "Int", "integer"]
+    },
+    {
+        type: "identification",
+        question: "What data type stores decimal numbers?",
+        answer: ["double", "float", "Double", "Float"]
+    },
+
+    // Keywords and Conversion (4 questions)
     {
         type: "identification",
         question: "What C++ keyword is used for explicit type conversion?",
@@ -292,6 +259,16 @@ const comprog1Test2 = [
         type: "identification",
         question: "What keyword makes a variable's value unchangeable?",
         answer: ["const", "CONST", "Const", "constant"]
+    },
+    {
+        type: "identification",
+        question: "What header file contains sqrt() and pow()? (without angle brackets)",
+        answer: ["cmath", "CMATH", "Cmath", "math"]
+    },
+    {
+        type: "identification",
+        question: "What header file is needed for the string class? (without angle brackets)",
+        answer: ["string", "STRING", "String"]
     }
 ];
 
