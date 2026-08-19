@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History of Computing - Practice Quizzes</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="index.html" class="active">Quizzes</a>
+            <a href="notes.html">Study Notes</a>
+        </nav>
+
+        <header>
+            <h1>History of Computing</h1>
+            <p class="subtitle">Practice Quizzes - From the Pascaline to Generative AI</p>
+        </header>
+
+        <main class="quiz-grid">
+            <div class="quiz-card" onclick="startQuiz(1)">
+                <div class="quiz-number">Quiz 1</div>
+                <h2>The Big Picture & Mechanical Era</h2>
+                <p class="quiz-parts">Parts 0-1</p>
+                <ul class="quiz-topics">
+                    <li>7 Computing Eras (1642-present)</li>
+                    <li>Pascal, Leibniz, Jacquard, de Colmar</li>
+                    <li>Pascaline, Arithmometer, Jacquard Loom</li>
+                </ul>
+                <span class="quiz-count">25 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(2)">
+                <div class="quiz-number">Quiz 2</div>
+                <h2>Modern & Pre-Electronic Period</h2>
+                <p class="quiz-parts">Parts 2-3</p>
+                <ul class="quiz-topics">
+                    <li>Babbage's Engines (Difference vs Analytical)</li>
+                    <li>Ada Lovelace - First Programmer</li>
+                    <li>Hollerith, ABC Computer, Mark I, ENIAC</li>
+                </ul>
+                <span class="quiz-count">30 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(3)">
+                <div class="quiz-number">Quiz 3</div>
+                <h2>First Generation & Comparisons</h2>
+                <p class="quiz-parts">Parts 4-5</p>
+                <ul class="quiz-topics">
+                    <li>Vacuum Tube Era (1946-1958)</li>
+                    <li>ENIAC, EDVAC, UNIVAC, IAS Machine</li>
+                    <li>Harvard vs von Neumann Architecture</li>
+                </ul>
+                <span class="quiz-count">30 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(4)">
+                <div class="quiz-number">Quiz 4</div>
+                <h2>Second & Third Generation</h2>
+                <p class="quiz-parts">Parts 6-7</p>
+                <ul class="quiz-topics">
+                    <li>Transistors (1956-1963)</li>
+                    <li>Integrated Circuits (1964-1971)</li>
+                    <li>DEC PDP Series, IBM System/360</li>
+                </ul>
+                <span class="quiz-count">25 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(5)">
+                <div class="quiz-number">Quiz 5</div>
+                <h2>Fourth Generation & Timelines</h2>
+                <p class="quiz-parts">Parts 8-9</p>
+                <ul class="quiz-topics">
+                    <li>Microprocessors (1971-present)</li>
+                    <li>Intel Processors, IBM PC History</li>
+                    <li>Internet & World Wide Web</li>
+                </ul>
+                <span class="quiz-count">30 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(6)">
+                <div class="quiz-number">Quiz 6</div>
+                <h2>Companies & Modern Topics</h2>
+                <p class="quiz-parts">Parts 10-11</p>
+                <ul class="quiz-topics">
+                    <li>Yahoo, Google, Android, YouTube</li>
+                    <li>History of AI (Turing to ChatGPT)</li>
+                    <li>Chat, Messaging & Social Media</li>
+                </ul>
+                <span class="quiz-count">30 Questions</span>
+            </div>
+
+            <div class="quiz-card" onclick="startQuiz(7)">
+                <div class="quiz-number">Quiz 7</div>
+                <h2>CPU Components & Quick Recall</h2>
+                <p class="quiz-parts">Parts 12-13</p>
+                <ul class="quiz-topics">
+                    <li>Intel Registers (AX, BX, CX, DX)</li>
+                    <li>EFLAGS Bits</li>
+                    <li>The "Firsts" List & Key Numbers</li>
+                </ul>
+                <span class="quiz-count">25 Questions</span>
+            </div>
+        </main>
+
+        <footer>
+            <p>Based on the History of Computing Study Guide</p>
+        </footer>
+    </div>
+
+    <script>
+        function startQuiz(quizNumber) {
+            window.location.href = `quiz.html?quiz=${quizNumber}`;
+        }
+    </script>
+</body>
+</html>

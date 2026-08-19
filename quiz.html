@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - History of Computing</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="index.html">Quizzes</a>
+            <a href="notes.html">Study Notes</a>
+        </nav>
+
+        <header class="quiz-header">
+            <h1 id="quiz-title">Loading Quiz...</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text">
+                <span id="current-question">0</span> / <span id="total-questions">0</span>
+            </div>
+        </header>
+
+        <main class="quiz-container">
+            <!-- Question Screen -->
+            <div id="question-screen" class="screen">
+                <div class="question-card">
+                    <div class="question-number" id="question-number">Question 1</div>
+                    <h2 class="question-text" id="question-text">Loading question...</h2>
+
+                    <div class="options-container" id="options-container">
+                        <!-- Options will be inserted here -->
+                    </div>
+
+                    <div class="feedback" id="feedback"></div>
+
+                    <button class="btn next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">
+                        Next Question &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="results-screen" class="screen" style="display: none;">
+                <div class="results-card">
+                    <h2>Quiz Complete!</h2>
+                    <div class="score-circle">
+                        <span class="score-number" id="final-score">0</span>
+                        <span class="score-label">out of <span id="max-score">0</span></span>
+                    </div>
+                    <p class="score-percentage" id="score-percentage">0%</p>
+                    <p class="score-message" id="score-message"></p>
+
+                    <div class="results-actions">
+                        <button class="btn primary-btn" onclick="reviewAnswers()">Review Answers</button>
+                        <button class="btn secondary-btn" onclick="restartQuiz()">Try Again</button>
+                        <button class="btn secondary-btn" onclick="goHome()">Back to Quizzes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Screen -->
+            <div id="review-screen" class="screen" style="display: none;">
+                <div class="review-header">
+                    <h2>Answer Review</h2>
+                    <button class="btn secondary-btn" onclick="backToResults()">Back to Results</button>
+                </div>
+                <div class="review-container" id="review-container">
+                    <!-- Review items will be inserted here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load quiz engine and question files -->
+    <script src="js/questions/quiz1.js"></script>
+    <script src="js/questions/quiz2.js"></script>
+    <script src="js/questions/quiz3.js"></script>
+    <script src="js/questions/quiz4.js"></script>
+    <script src="js/questions/quiz5.js"></script>
+    <script src="js/questions/quiz6.js"></script>
+    <script src="js/questions/quiz7.js"></script>
+    <script src="js/quiz-engine.js"></script>
+</body>
+</html>
