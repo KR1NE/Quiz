@@ -18,11 +18,18 @@
         </nav>
 
         <header>
-            <h1>History of Computing</h1>
-            <p class="subtitle">Practice Quizzes - From the Pascaline to Generative AI</p>
+            <h1 id="page-title">History of Computing</h1>
+            <p class="subtitle" id="page-subtitle">Practice Quizzes - From the Pascaline to Generative AI</p>
         </header>
 
-        <main class="quiz-grid">
+        <!-- Subject Tabs -->
+        <div class="subject-tabs">
+            <button class="tab-btn active" onclick="switchSubject('itc')" id="tab-itc">ITC</button>
+            <button class="tab-btn" onclick="switchSubject('comprog1')" id="tab-comprog1">ComProg1</button>
+        </div>
+
+        <!-- ITC Quizzes -->
+        <main class="quiz-grid" id="itc-quizzes">
             <div class="quiz-card" onclick="startQuiz(1)">
                 <div class="quiz-number">Quiz 1</div>
                 <h2>The Big Picture & Mechanical Era</h2>
@@ -108,6 +115,21 @@
             </div>
         </main>
 
+        <!-- ComProg1 Quizzes (Hidden by default) -->
+        <main class="quiz-grid" id="comprog1-quizzes" style="display: none;">
+            <div class="quiz-card" onclick="startComprog1Quiz(1)">
+                <div class="quiz-number">Quiz 1</div>
+                <h2>Variables, Operators & Functions</h2>
+                <p class="quiz-parts">Weeks 2-3</p>
+                <ul class="quiz-topics">
+                    <li>Data Types, Variables, Constants</li>
+                    <li>Arithmetic Operators & Precedence</li>
+                    <li>Functions, Headers & String Class</li>
+                </ul>
+                <span class="quiz-count">40 Questions (30 MC + 10 ID)</span>
+            </div>
+        </main>
+
         <footer>
             <p>Based on the History of Computing Study Guide</p>
         </footer>
@@ -116,7 +138,36 @@
     <script src="js/theme.js"></script>
     <script>
         function startQuiz(quizNumber) {
-            window.location.href = `quiz.html?quiz=${quizNumber}`;
+            window.location.href = `quiz.html?subject=itc&quiz=${quizNumber}`;
+        }
+
+        function startComprog1Quiz(quizNumber) {
+            window.location.href = `quiz.html?subject=comprog1&quiz=${quizNumber}`;
+        }
+
+        function switchSubject(subject) {
+            const itcQuizzes = document.getElementById('itc-quizzes');
+            const comprog1Quizzes = document.getElementById('comprog1-quizzes');
+            const tabItc = document.getElementById('tab-itc');
+            const tabComprog1 = document.getElementById('tab-comprog1');
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
+
+            if (subject === 'itc') {
+                itcQuizzes.style.display = 'grid';
+                comprog1Quizzes.style.display = 'none';
+                tabItc.classList.add('active');
+                tabComprog1.classList.remove('active');
+                pageTitle.textContent = 'History of Computing';
+                pageSubtitle.textContent = 'Practice Quizzes - From the Pascaline to Generative AI';
+            } else {
+                itcQuizzes.style.display = 'none';
+                comprog1Quizzes.style.display = 'grid';
+                tabItc.classList.remove('active');
+                tabComprog1.classList.add('active');
+                pageTitle.textContent = 'Computer Programming 1';
+                pageSubtitle.textContent = 'Practice Quizzes - C++ Fundamentals';
+            }
         }
     </script>
 </body>
