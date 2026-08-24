@@ -136,6 +136,15 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Append an optional explanation line under the feedback message
+function appendExplanation(feedback, question) {
+    if (!question.explanation) return;
+    const note = document.createElement('div');
+    note.className = 'feedback-note';
+    note.textContent = question.explanation;
+    feedback.appendChild(note);
+}
+
 // Display current question
 function showQuestion() {
     if (currentQuestionIndex >= questions.length) {
@@ -205,7 +214,7 @@ function showQuestion() {
 
         // Shuffle options and create buttons
         const shuffledOptions = shuffleArray([...question.options]);
-        const letters = ['A', 'B', 'C', 'D'];
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
 
         shuffledOptions.forEach((option, index) => {
             const button = document.createElement('button');
@@ -268,6 +277,7 @@ function selectAnswer(selectedOption, buttonElement) {
         feedback.className = 'feedback incorrect';
         feedback.textContent = `Incorrect. The correct answer is: ${question.answer}`;
     }
+    appendExplanation(feedback, question);
 
     // Show next button
     document.getElementById('next-btn').style.display = 'block';
@@ -315,6 +325,7 @@ function submitIdentificationAnswer() {
         feedback.className = 'feedback incorrect';
         feedback.textContent = `Incorrect. The correct answer is: ${question.answer[0]}`;
     }
+    appendExplanation(feedback, question);
 
     // Show next button
     const nextBtn = document.getElementById('next-btn');
