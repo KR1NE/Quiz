@@ -565,6 +565,15 @@ header h1 {
     color: var(--success-text);
 }
 
+.review-explanation {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
 /* Notes Page Styles */
 .notes-container {
     padding: 10px 0;

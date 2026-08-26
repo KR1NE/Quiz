@@ -247,7 +247,8 @@ function selectAnswer(selectedOption, buttonElement) {
         question: question.question,
         userAnswer: selectedOption,
         correctAnswer: question.answer,
-        isCorrect: isCorrect
+        isCorrect: isCorrect,
+        explanation: question.explanation
     });
 
     // Update score
@@ -304,7 +305,8 @@ function submitIdentificationAnswer() {
         question: question.question,
         userAnswer: userAnswer || '(no answer)',
         correctAnswer: question.answer[0], // Show first valid answer
-        isCorrect: isCorrect
+        isCorrect: isCorrect,
+        explanation: question.explanation
     });
 
     // Update score
@@ -521,6 +523,14 @@ function reviewAnswers() {
                 </div>
                 <div class="review-answer correct-answer">
                     Correct answer: ${escapeHtml(answer.correctAnswer)}
+                </div>
+            `;
+        }
+
+        if (answer.explanation) {
+            html += `
+                <div class="review-explanation">
+                    ${escapeHtml(answer.explanation)}
                 </div>
             `;
         }
