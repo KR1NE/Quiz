@@ -117,6 +117,18 @@
 
         <!-- ComProg1 Quizzes (Hidden by default) -->
         <main class="quiz-grid" id="comprog1-quizzes" style="display: none;">
+            <div class="quiz-card" onclick="startComprog1Quiz(3)">
+                <div class="quiz-number">Week 1</div>
+                <h2>Introduction to Computer Programming</h2>
+                <p class="quiz-parts">Week 1</p>
+                <ul class="quiz-topics">
+                    <li>Language Levels & Paradigms</li>
+                    <li>Program Structure & System Development</li>
+                    <li>cout, Insertion Operator & Escape Sequences</li>
+                </ul>
+                <span class="quiz-count">40 Questions (20 MC + 20 ID)</span>
+            </div>
+
             <div class="quiz-card" onclick="startComprog1Quiz(1)">
                 <div class="quiz-number">Quiz 1</div>
                 <h2>Variables, Operators & Functions</h2>
@@ -139,6 +151,30 @@
                     <li>Functions, Headers & String Class</li>
                 </ul>
                 <span class="quiz-count">40 Questions (20 MC + 20 ID)</span>
+            </div>
+
+            <div class="quiz-card" onclick="startComprog1Quiz(4)">
+                <div class="quiz-number">Week 4</div>
+                <h2>Input and Output with Streams</h2>
+                <p class="quiz-parts">Week 4</p>
+                <ul class="quiz-topics">
+                    <li>Streams: cin, cout, cerr, clog</li>
+                    <li>Manipulators, setw, setprecision & setfill</li>
+                    <li>Formatted Input, getline & Character I/O</li>
+                </ul>
+                <span class="quiz-count">40 Questions (20 MC + 20 ID)</span>
+            </div>
+
+            <div class="quiz-card" onclick="startComprog1Quiz(5)">
+                <div class="quiz-number">Week 5</div>
+                <h2>Operators for Fundamental Types</h2>
+                <p class="quiz-parts">Week 5</p>
+                <ul class="quiz-topics">
+                    <li>Arithmetic, Precedence & Compound Assignment</li>
+                    <li>Relational & Logical Operators</li>
+                    <li>Prefix/Postfix Tracing Table</li>
+                </ul>
+                <span class="quiz-count">40 Questions (20 MC + 20 Tracing)</span>
             </div>
         </main>
 
@@ -181,6 +217,14 @@
                 pageSubtitle.textContent = 'Practice Quizzes - C++ Fundamentals';
             }
         }
+
+        // Open the tab the visitor came back from, e.g. index.html?subject=comprog1
+        document.addEventListener('DOMContentLoaded', function() {
+            const subject = new URLSearchParams(window.location.search).get('subject');
+            if (subject === 'comprog1') {
+                switchSubject('comprog1');
+            }
+        });
     </script>
 </body>
 </html>

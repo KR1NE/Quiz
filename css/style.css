@@ -282,6 +282,7 @@ header h1 {
     margin-bottom: 25px;
     line-height: 1.5;
     color: var(--text-primary);
+    white-space: pre-wrap;
 }
 
 /* Options */
@@ -884,5 +885,144 @@ footer {
 
     .answer-input {
         padding: 12px 14px;
+    }
+}
+
+/* Prefix/Postfix Tracing Table (Test 2 of the Week 5 quiz) */
+.trace-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.trace-preamble {
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 12px;
+    white-space: pre-wrap;
+}
+
+/* The wrapper scrolls on narrow screens so the columns never have to shrink */
+.trace-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.trace-table {
+    width: 100%;
+    min-width: 520px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+/* Fixed proportions - the columns do not resize with the code or the input */
+.trace-table .col-code {
+    width: 44%;
+}
+
+.trace-table .col-num {
+    width: 14%;
+}
+
+.trace-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-align: right;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.trace-table th.col-code {
+    text-align: left;
+}
+
+.trace-table td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    color: var(--text-secondary);
+}
+
+.trace-table .trace-code {
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    text-align: left;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.trace-table .trace-given {
+    text-align: right;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+}
+
+.trace-table .trace-cell {
+    padding: 6px 8px;
+}
+
+.trace-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+    text-align: right;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.trace-input:focus {
+    outline: none;
+    border-color: var(--text-muted);
+    background: var(--bg-tertiary);
+}
+
+.trace-input:disabled {
+    cursor: not-allowed;
+}
+
+.trace-input.cell-correct {
+    border-color: var(--success);
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.trace-input.cell-incorrect {
+    border-color: var(--error);
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+@media (max-width: 768px) {
+    .trace-table {
+        font-size: 0.85rem;
+    }
+
+    .trace-table th,
+    .trace-table td {
+        padding: 8px;
+    }
+
+    .trace-table .trace-cell {
+        padding: 6px;
+    }
+
+    .trace-input {
+        padding: 7px 8px;
+        font-size: 0.9rem;
     }
 }
