@@ -26,8 +26,23 @@ const itcQuizData = {
 // ComProg1 Quiz titles
 const comprog1QuizTitles = {
     1: "ComProg1: Variables, Operators & Functions",
-    2: "ComProg1: Variables, Operators & Functions (Set 2)"
+    2: "ComProg1: Variables, Operators & Functions (Set 2)",
+    3: "ComProg1 Week 1: Introduction to Computer Programming",
+    4: "ComProg1 Week 4: Input and Output with Streams",
+    5: "ComProg1 Week 5: Operators for Fundamental Types"
 };
+
+// ComProg1 Quiz data mapping
+const comprog1QuizData = {
+    1: typeof comprog1Questions !== 'undefined' ? comprog1Questions : null,
+    2: typeof comprog1Quiz2Questions !== 'undefined' ? comprog1Quiz2Questions : null,
+    3: typeof comprog1Week1Questions !== 'undefined' ? comprog1Week1Questions : null,
+    4: typeof comprog1Week4Questions !== 'undefined' ? comprog1Week4Questions : null,
+    5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null
+};
+
+// Labels for the second test of the current ComProg1 quiz
+let test2Label = 'Identification';
 
 // State variables
 let currentSubject = 'itc';
@@ -56,6 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize the quiz
 function initQuiz() {
+    // Keep the nav link pointing back at the tab this quiz came from
+    const homeLink = document.getElementById('home-link');
+    if (homeLink) {
+        homeLink.href = homeUrl();
+    }
+
     if (currentSubject === 'comprog1') {
         initComprog1Quiz();
     } else {
@@ -90,15 +111,30 @@ function initComprog1Quiz() {
     document.getElementById('quiz-title').textContent = comprog1QuizTitles[currentQuiz] || 'ComProg1 Quiz';
 
     // Get questions based on quiz number
-    if (currentQuiz === 1 && typeof comprog1Questions !== 'undefined') {
-        test1Questions = shuffleArray([...comprog1Questions.test1]);
-        test2Questions = shuffleArray([...comprog1Questions.test2]);
-    } else if (currentQuiz === 2 && typeof comprog1Quiz2Questions !== 'undefined') {
-        test1Questions = shuffleArray([...comprog1Quiz2Questions.test1]);
-        test2Questions = shuffleArray([...comprog1Quiz2Questions.test2]);
+    const quizData = comprog1QuizData[currentQuiz];
+    if (quizData) {
+        test1Questions = shuffleArray([...quizData.test1]);
+        // Some tests (e.g. the prefix/postfix tracing drill) are deliberately
+        // ordered easy to hard, so they opt out of shuffling.
+        test2Questions = quizData.shuffleTest2 === false
+            ? [...quizData.test2]
+            : shuffleArray([...quizData.test2]);
+        test2Label = quizData.test2Label || 'Identification';
     } else {
         test1Questions = [];
         test2Questions = [];
+        test2Label = 'Identification';
+    }
+
+    // Update the transition screen copy for this quiz
+    const transitionMsg = document.querySelector('#test-transition-screen .transition-message');
+    if (transitionMsg) {
+        transitionMsg.textContent = `Ready for Test 2: ${test2Label}`;
+    }
+    const test2Info = document.getElementById('test2-info');
+    if (test2Info && quizData) {
+        test2Info.textContent = quizData.test2Info ||
+            `${test2Questions.length} questions - Type your answers`;
     }
 
     // Start with Test 1
@@ -136,6 +172,127 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Prompt shown above a prefix/postfix tracing table
+const TRACE_PROMPT = 'Trace the code below. Enter the final value of x and the final value of y.';
+
+// Short tag used in the question counter, e.g. "Test 2 - ID"
+function shortTest2Label() {
+    return test2Label === 'Identification' ? 'ID' : test2Label;
+}
+
+// Collect the two tracing inputs (may be absent on pages without the table)
+function traceInputs() {
+    return [
+        document.getElementById('trace-final-x'),
+        document.getElementById('trace-final-y')
+    ].filter(Boolean);
+}
+
+// Clear and re-enable the tracing table so it is ready for the next question
+function resetTraceInputs() {
+    traceInputs().forEach(input => {
+        input.value = '';
+        input.disabled = false;
+        input.classList.remove('cell-correct', 'cell-incorrect');
+    });
+    const traceSubmit = document.getElementById('trace-submit-btn');
+    if (traceSubmit) traceSubmit.disabled = false;
+}
+
+// Fill the tracing table for the current question
+function showTraceQuestion(question) {
+    resetTraceInputs();
+
+    document.getElementById('trace-code').textContent = question.code;
+    document.getElementById('trace-init-x').textContent = question.initialX;
+    document.getElementById('trace-init-y').textContent = question.initialY;
+
+    const preamble = document.getElementById('trace-preamble');
+    if (preamble) {
+        preamble.textContent =
+            `Assume:  int x = ${question.initialX};   int y = ${question.initialY};`;
+    }
+
+    const [finalX, finalY] = traceInputs();
+    if (!finalX || !finalY) return;
+
+    // Enter moves on to the y cell, or submits once both are filled in
+    finalX.onkeypress = function(e) {
+        if (e.key !== 'Enter' || answered) return;
+        if (finalY.value.trim() === '') {
+            finalY.focus();
+        } else {
+            submitTraceAnswer();
+        }
+    };
+    finalY.onkeypress = function(e) {
+        if (e.key === 'Enter' && !answered) {
+            submitTraceAnswer();
+        }
+    };
+
+    finalX.focus();
+}
+
+// Submit a prefix/postfix tracing answer - BOTH values must be correct
+function submitTraceAnswer() {
+    if (answered) return;
+    answered = true;
+
+    const question = questions[currentQuestionIndex];
+    const [finalX, finalY] = traceInputs();
+
+    const rawX = finalX ? finalX.value.trim() : '';
+    const rawY = finalY ? finalY.value.trim() : '';
+
+    // An empty cell is always wrong; Number('') would otherwise be 0
+    const xOk = rawX !== '' && Number(rawX) === question.answerX;
+    const yOk = rawY !== '' && Number(rawY) === question.answerY;
+    const isCorrect = xOk && yOk;
+
+    // Mark each cell independently so the student sees which one was wrong
+    if (finalX) finalX.classList.add(xOk ? 'cell-correct' : 'cell-incorrect');
+    if (finalY) finalY.classList.add(yOk ? 'cell-correct' : 'cell-incorrect');
+
+    // Store user answer
+    userAnswers.push({
+        question: `${question.code}   (starting from x = ${question.initialX}, y = ${question.initialY})`,
+        userAnswer: `x = ${rawX || '(blank)'}, y = ${rawY || '(blank)'}`,
+        correctAnswer: `x = ${question.answerX}, y = ${question.answerY}`,
+        isCorrect: isCorrect,
+        explanation: question.explanation
+    });
+
+    // Update score
+    if (isCorrect) {
+        score++;
+    }
+
+    // Disable the inputs and the submit button
+    traceInputs().forEach(input => { input.disabled = true; });
+    const traceSubmit = document.getElementById('trace-submit-btn');
+    if (traceSubmit) traceSubmit.disabled = true;
+
+    // Show feedback
+    const feedback = document.getElementById('feedback');
+    if (isCorrect) {
+        feedback.className = 'feedback correct';
+        feedback.textContent = 'Correct! Well done!';
+    } else {
+        feedback.className = 'feedback incorrect';
+        feedback.textContent =
+            `Incorrect. Final x = ${question.answerX}, final y = ${question.answerY}`;
+    }
+    appendExplanation(feedback, question);
+
+    // Show next button
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = currentQuestionIndex === questions.length - 1
+        ? 'See Results'
+        : 'Next Question →';
+}
+
 // Append an optional explanation line under the feedback message
 function appendExplanation(feedback, question) {
     if (!question.explanation) return;
@@ -163,15 +320,17 @@ function showQuestion() {
     // Update progress
     updateProgress();
 
-    // Calculate question number (for ComProg1 Test 2, add 30)
+    // Calculate question number (Test 2 continues the numbering after Test 1)
     let displayQuestionNum = currentQuestionIndex + 1;
     if (currentSubject === 'comprog1' && currentTest === 2) {
-        displayQuestionNum = currentQuestionIndex + 31; // Items 31-40
+        displayQuestionNum = test1Questions.length + currentQuestionIndex + 1;
     }
 
     // Update question number with test indicator for ComProg1
     if (currentSubject === 'comprog1') {
-        const testLabel = currentTest === 1 ? 'Test 1 - MC' : 'Test 2 - ID';
+        const testLabel = currentTest === 1
+            ? 'Test 1 - MC'
+            : `Test 2 - ${shortTest2Label()}`;
         document.getElementById('question-number').textContent =
             `${testLabel} | Question ${displayQuestionNum}`;
     } else {
@@ -180,19 +339,22 @@ function showQuestion() {
     }
 
     // Update question text
-    document.getElementById('question-text').textContent = question.question;
+    document.getElementById('question-text').textContent =
+        question.type === 'trace-table' ? TRACE_PROMPT : question.question;
 
     // Get containers
     const optionsContainer = document.getElementById('options-container');
     const identificationContainer = document.getElementById('identification-container');
+    const traceContainer = document.getElementById('trace-container');
 
     // Clear previous content
     optionsContainer.innerHTML = '';
 
     // Check question type
     if (question.type === 'identification') {
-        // Show identification input, hide options
+        // Show identification input, hide the others
         optionsContainer.style.display = 'none';
+        if (traceContainer) traceContainer.style.display = 'none';
         if (identificationContainer) {
             identificationContainer.style.display = 'block';
             const answerInput = document.getElementById('answer-input');
@@ -205,12 +367,21 @@ function showQuestion() {
                 }
             };
         }
+    } else if (question.type === 'trace-table') {
+        // Show the tracing table, hide the others
+        optionsContainer.style.display = 'none';
+        if (identificationContainer) identificationContainer.style.display = 'none';
+        if (traceContainer) {
+            traceContainer.style.display = 'block';
+            showTraceQuestion(question);
+        }
     } else {
-        // Show options, hide identification input
+        // Show options, hide the input containers
         optionsContainer.style.display = 'block';
         if (identificationContainer) {
             identificationContainer.style.display = 'none';
         }
+        if (traceContainer) traceContainer.style.display = 'none';
 
         // Shuffle options and create buttons
         const shuffledOptions = shuffleArray([...question.options]);
@@ -360,8 +531,12 @@ function showTestTransition() {
     document.getElementById('test1-max').textContent = test1Questions.length;
     document.getElementById('test1-percentage').textContent = `${percentage}%`;
 
-    // Update progress bar to show Test 1 complete (75% = 30/40)
-    document.getElementById('progress-bar').style.width = '75%';
+    // Update progress bar to show Test 1 complete
+    const totalQuestions = test1Questions.length + test2Questions.length;
+    const test1Progress = totalQuestions
+        ? (test1Questions.length / totalQuestions) * 100
+        : 0;
+    document.getElementById('progress-bar').style.width = `${test1Progress}%`;
 }
 
 // Start Test 2 (ComProg1)
@@ -387,6 +562,7 @@ function startTest2() {
     if (submitBtn) {
         submitBtn.disabled = false;
     }
+    resetTraceInputs();
 
     // Show first Test 2 question
     showQuestion();
@@ -405,6 +581,7 @@ function nextQuestion() {
     if (submitBtn) {
         submitBtn.disabled = false;
     }
+    resetTraceInputs();
 
     showQuestion();
 }
@@ -501,7 +678,9 @@ function reviewAnswers() {
         // Add test indicator for ComProg1
         let testLabel = '';
         if (currentSubject === 'comprog1') {
-            testLabel = index < test1Questions.length ? '(Test 1 - MC)' : '(Test 2 - ID)';
+            testLabel = index < test1Questions.length
+                ? '(Test 1 - MC)'
+                : `(Test 2 - ${shortTest2Label()})`;
         }
 
         let html = `
@@ -562,11 +741,19 @@ function restartQuiz() {
     if (submitBtn) {
         submitBtn.disabled = false;
     }
+    resetTraceInputs();
 
     initQuiz();
 }
 
+// Link back to the quiz list, keeping the subject tab the user came from
+function homeUrl() {
+    return currentSubject === 'comprog1'
+        ? 'index.html?subject=comprog1'
+        : 'index.html';
+}
+
 // Go back to home page
 function goHome() {
-    window.location.href = 'index.html';
+    window.location.href = homeUrl();
 }

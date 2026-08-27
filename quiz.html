@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <nav class="nav">
-            <a href="index.html">Quizzes</a>
+            <a href="index.html" id="home-link">Quizzes</a>
             <a href="notes.html">Study Notes</a>
             <button class="theme-toggle" id="theme-toggle">
                 <span class="icon">☾</span>
@@ -42,6 +42,40 @@
                     <div class="identification-container" id="identification-container" style="display: none;">
                         <input type="text" id="answer-input" class="answer-input" placeholder="Type your answer..." autocomplete="off">
                         <button class="btn submit-btn" id="submit-btn" onclick="submitIdentificationAnswer()">Submit Answer</button>
+                    </div>
+
+                    <!-- Prefix/Postfix Tracing Table (for Test 2 of the Week 5 quiz) -->
+                    <div class="trace-container" id="trace-container" style="display: none;">
+                        <div class="trace-preamble" id="trace-preamble">Assume:  int x = 5;   int y = 0;</div>
+                        <div class="trace-table-wrap">
+                            <table class="trace-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-code">Code to Evaluate</th>
+                                        <th class="col-num">Initial x</th>
+                                        <th class="col-num">Initial y</th>
+                                        <th class="col-num">Final x</th>
+                                        <th class="col-num">Final y</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="trace-code" id="trace-code"></td>
+                                        <td class="trace-given" id="trace-init-x"></td>
+                                        <td class="trace-given" id="trace-init-y"></td>
+                                        <td class="trace-cell">
+                                            <input type="text" inputmode="numeric" id="trace-final-x"
+                                                   class="trace-input" aria-label="Final value of x" autocomplete="off">
+                                        </td>
+                                        <td class="trace-cell">
+                                            <input type="text" inputmode="numeric" id="trace-final-y"
+                                                   class="trace-input" aria-label="Final value of y" autocomplete="off">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button class="btn submit-btn" id="trace-submit-btn" onclick="submitTraceAnswer()">Submit Answer</button>
                     </div>
 
                     <div class="feedback" id="feedback"></div>
@@ -114,6 +148,9 @@
     <!-- ComProg1 Quiz Questions -->
     <script src="js/questions/comprog1.js"></script>
     <script src="js/questions/comprog1-quiz2.js"></script>
+    <script src="js/questions/comprog1-week1.js"></script>
+    <script src="js/questions/comprog1-week4.js"></script>
+    <script src="js/questions/comprog1-week5.js"></script>
     <script src="js/quiz-engine.js"></script>
 </body>
 </html>
