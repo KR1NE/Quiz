@@ -41,7 +41,69 @@ const comprog1QuizData = {
     5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null
 };
 
-// Labels for the second test of the current ComProg1 quiz
+// Theology Quiz titles
+const theologyQuizTitles = {
+    1: "Theology: Understanding Theology, Faith & Philosophy"
+};
+
+// Theology Quiz data mapping
+const theologyQuizData = {
+    1: typeof theologyQuestions !== 'undefined' ? theologyQuestions : null
+};
+
+// Per-subject configuration. `twoTests` is what actually drives the Test 1 /
+// Test 2 flow - it used to be a hardcoded check for the string 'comprog1'.
+const SUBJECTS = {
+    itc: {
+        twoTests: false,
+        quizTitles: itcQuizTitles,
+        quizData: itcQuizData,
+        fallbackTitle: 'Quiz',
+        messages: [
+            'Excellent! You really know your computing history!',
+            'Great job! You have a solid understanding!',
+            'Good effort! Keep studying to improve!',
+            'Keep practicing! Review the study guide and try again.'
+        ]
+    },
+    comprog1: {
+        twoTests: true,
+        quizTitles: comprog1QuizTitles,
+        quizData: comprog1QuizData,
+        fallbackTitle: 'ComProg1 Quiz',
+        test1Label: 'MC',
+        defaultTest2Label: 'Identification',
+        defaultTest2Info: 'Type your answers',
+        messages: [
+            'Excellent! You have mastered C++ fundamentals!',
+            'Great job! You have a solid understanding of C++!',
+            'Good effort! Keep practicing your C++ skills!',
+            'Keep practicing! Review the C++ concepts and try again.'
+        ]
+    },
+    theology: {
+        twoTests: true,
+        quizTitles: theologyQuizTitles,
+        quizData: theologyQuizData,
+        fallbackTitle: 'Theology Quiz',
+        test1Label: 'Modified MC',
+        defaultTest2Label: 'True or False',
+        defaultTest2Info: 'Choose True or False',
+        messages: [
+            'Excellent! You have mastered the Theology lessons!',
+            'Great job! You have a solid grasp of the material!',
+            'Good effort! Keep reviewing the key concepts!',
+            'Keep studying! Go back over the lessons and try again.'
+        ]
+    }
+};
+
+// Config for the subject currently being taken
+function subject() {
+    return SUBJECTS[currentSubject] || SUBJECTS.itc;
+}
+
+// Labels for the second test of the current two-test quiz
 let test2Label = 'Identification';
 
 // State variables
@@ -77,8 +139,8 @@ function initQuiz() {
         homeLink.href = homeUrl();
     }
 
-    if (currentSubject === 'comprog1') {
-        initComprog1Quiz();
+    if (subject().twoTests) {
+        initTwoTestQuiz();
     } else {
         initItcQuiz();
     }
@@ -87,10 +149,12 @@ function initQuiz() {
 // Initialize ITC Quiz (original behavior)
 function initItcQuiz() {
     // Set quiz title
-    document.getElementById('quiz-title').textContent = itcQuizTitles[currentQuiz] || 'Quiz';
+    const cfg = subject();
+    document.getElementById('quiz-title').textContent =
+        cfg.quizTitles[currentQuiz] || cfg.fallbackTitle;
 
     // Get and shuffle questions
-    questions = shuffleArray([...itcQuizData[currentQuiz]]);
+    questions = shuffleArray([...(cfg.quizData[currentQuiz] || [])]);
 
     // Reset state
     currentQuestionIndex = 0;
@@ -105,13 +169,16 @@ function initItcQuiz() {
     showQuestion();
 }
 
-// Initialize ComProg1 Quiz (with Test 1 and Test 2)
-function initComprog1Quiz() {
+// Initialize a two-test quiz (Test 1 -> transition -> Test 2)
+function initTwoTestQuiz() {
+    const cfg = subject();
+
     // Set quiz title
-    document.getElementById('quiz-title').textContent = comprog1QuizTitles[currentQuiz] || 'ComProg1 Quiz';
+    document.getElementById('quiz-title').textContent =
+        cfg.quizTitles[currentQuiz] || cfg.fallbackTitle;
 
     // Get questions based on quiz number
-    const quizData = comprog1QuizData[currentQuiz];
+    const quizData = cfg.quizData[currentQuiz];
     if (quizData) {
         test1Questions = shuffleArray([...quizData.test1]);
         // Some tests (e.g. the prefix/postfix tracing drill) are deliberately
@@ -119,11 +186,11 @@ function initComprog1Quiz() {
         test2Questions = quizData.shuffleTest2 === false
             ? [...quizData.test2]
             : shuffleArray([...quizData.test2]);
-        test2Label = quizData.test2Label || 'Identification';
+        test2Label = quizData.test2Label || cfg.defaultTest2Label;
     } else {
         test1Questions = [];
         test2Questions = [];
-        test2Label = 'Identification';
+        test2Label = cfg.defaultTest2Label;
     }
 
     // Update the transition screen copy for this quiz
@@ -134,7 +201,7 @@ function initComprog1Quiz() {
     const test2Info = document.getElementById('test2-info');
     if (test2Info && quizData) {
         test2Info.textContent = quizData.test2Info ||
-            `${test2Questions.length} questions - Type your answers`;
+            `${test2Questions.length} questions - ${cfg.defaultTest2Info}`;
     }
 
     // Start with Test 1
@@ -176,8 +243,13 @@ function escapeHtml(text) {
 const TRACE_PROMPT = 'Trace the code below. Enter the final value of x and the final value of y.';
 
 // Short tag used in the question counter, e.g. "Test 2 - ID"
+const TEST2_SHORT_LABELS = {
+    'Identification': 'ID',
+    'True or False': 'T/F'
+};
+
 function shortTest2Label() {
-    return test2Label === 'Identification' ? 'ID' : test2Label;
+    return TEST2_SHORT_LABELS[test2Label] || test2Label;
 }
 
 // Collect the two tracing inputs (may be absent on pages without the table)
@@ -285,12 +357,217 @@ function submitTraceAnswer() {
     }
     appendExplanation(feedback, question);
 
-    // Show next button
+    showNextButton();
+}
+
+// ---------------------------------------------------------------------------
+// Modified multiple choice: five choices A-E where E is always "None of the
+// above". The student enters how many choices are correct AND ticks exactly
+// those choices. Both must be right - there is no partial credit.
+// ---------------------------------------------------------------------------
+
+const MULTI_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+const MULTI_NONE_TEXT = 'None of the above';
+
+// The five checkboxes of the current question, in A-E order
+function multiCheckboxes() {
+    return [...document.querySelectorAll('#multi-options .multi-check')];
+}
+
+// Letters the student has ticked, e.g. ['A', 'C']
+function multiSelectedLetters() {
+    return multiCheckboxes().filter(box => box.checked).map(box => box.value);
+}
+
+// Clear and re-enable the whole block so it is ready for the next question
+function resetMultiInputs() {
+    const countInput = document.getElementById('multi-count');
+    if (countInput) {
+        countInput.value = '';
+        countInput.disabled = false;
+    }
+    multiCheckboxes().forEach(box => {
+        box.checked = false;
+        box.disabled = false;
+    });
+    document.querySelectorAll('#multi-options .multi-option').forEach(row => {
+        row.classList.remove('choice-correct', 'choice-wrong');
+    });
+    const hint = document.getElementById('multi-hint');
+    if (hint) {
+        hint.textContent = '';
+        hint.className = 'multi-hint';
+    }
+    const submit = document.getElementById('multi-submit-btn');
+    if (submit) submit.disabled = true;
+}
+
+// Keep the hint line and the Submit button in step with what has been entered.
+// Submit stays locked until the number typed matches the boxes ticked, which is
+// what stops impossible answers like "3" with only two choices selected.
+function updateMultiState() {
+    if (answered) return;
+
+    const countInput = document.getElementById('multi-count');
+    const hint = document.getElementById('multi-hint');
+    const submit = document.getElementById('multi-submit-btn');
+    if (!countInput || !submit) return;
+
+    const selected = multiSelectedLetters().length;
+    const raw = countInput.value.trim();
+    const stated = Number(raw);
+    const hasCount = raw !== '' && Number.isInteger(stated) && stated >= 1 && stated <= 5;
+
+    const ready = hasCount && selected > 0 && selected === stated;
+    submit.disabled = !ready;
+
+    if (!hint) return;
+    if (!hasCount) {
+        hint.textContent = 'Enter how many choices are correct, then tick them below.';
+        hint.className = 'multi-hint';
+    } else {
+        hint.textContent = `${selected} of ${stated} selected`;
+        hint.className = ready ? 'multi-hint ready' : 'multi-hint';
+    }
+}
+
+// Build the five choice rows for the current question
+function showMultiQuestion(question) {
+    resetMultiInputs();
+
+    const container = document.getElementById('multi-options');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // The author supplies A-D; E is always "None of the above"
+    const choices = [...question.options, MULTI_NONE_TEXT];
+
+    choices.forEach((choice, index) => {
+        const letter = MULTI_LETTERS[index];
+        const row = document.createElement('label');
+        row.className = 'multi-option';
+        row.setAttribute('data-letter', letter);
+        row.innerHTML = `
+            <input type="checkbox" class="multi-check" value="${letter}">
+            <span class="option-letter">${letter}</span>
+            <span class="option-text">${escapeHtml(choice)}</span>
+        `;
+        container.appendChild(row);
+    });
+
+    // "None of the above" cannot be true at the same time as any other choice,
+    // so ticking E clears A-D and ticking A-D clears E.
+    multiCheckboxes().forEach(box => {
+        box.onchange = function() {
+            if (answered) return;
+            if (box.value === 'E') {
+                if (box.checked) {
+                    multiCheckboxes().forEach(other => {
+                        if (other.value !== 'E') other.checked = false;
+                    });
+                }
+            } else if (box.checked) {
+                const none = multiCheckboxes().find(other => other.value === 'E');
+                if (none) none.checked = false;
+            }
+            updateMultiState();
+        };
+    });
+
+    const countInput = document.getElementById('multi-count');
+    if (countInput) {
+        countInput.oninput = updateMultiState;
+        countInput.focus();
+    }
+
+    updateMultiState();
+}
+
+// Render an answer key or a student response as "2 correct - A, C"
+function describeMultiAnswer(letters) {
+    if (!letters.length) return 'no choices selected';
+    const sorted = [...letters].sort();
+    return `${sorted.length} correct - ${sorted.join(', ')}`;
+}
+
+// Submit a modified multiple choice answer - the count AND the exact set must match
+function submitMultiAnswer() {
+    if (answered) return;
+
+    const question = questions[currentQuestionIndex];
+    const countInput = document.getElementById('multi-count');
+    const selected = multiSelectedLetters();
+    const stated = countInput ? Number(countInput.value.trim()) : NaN;
+
+    // Both conditions are checked independently, per the exam rules
+    const countOk = stated === question.answer.length;
+    const setOk = selected.length === question.answer.length &&
+        selected.every(letter => question.answer.includes(letter));
+    const isCorrect = countOk && setOk;
+
+    answered = true;
+
+    // Mark every row: what was actually correct, and what was ticked wrongly
+    document.querySelectorAll('#multi-options .multi-option').forEach(row => {
+        const letter = row.getAttribute('data-letter');
+        if (question.answer.includes(letter)) {
+            row.classList.add('choice-correct');
+        } else if (selected.includes(letter)) {
+            row.classList.add('choice-wrong');
+        }
+    });
+
+    // Store user answer
+    userAnswers.push({
+        question: question.question,
+        userAnswer: countInput && countInput.value.trim() !== ''
+            ? `${countInput.value.trim()} correct - ${selected.length ? [...selected].sort().join(', ') : 'none selected'}`
+            : '(no answer)',
+        correctAnswer: describeMultiAnswer(question.answer),
+        isCorrect: isCorrect,
+        explanation: question.explanation
+    });
+
+    // Update score
+    if (isCorrect) {
+        score++;
+    }
+
+    // Lock the inputs
+    if (countInput) countInput.disabled = true;
+    multiCheckboxes().forEach(box => { box.disabled = true; });
+    const submit = document.getElementById('multi-submit-btn');
+    if (submit) submit.disabled = true;
+    const hint = document.getElementById('multi-hint');
+    if (hint) hint.textContent = '';
+
+    // Show feedback
+    const feedback = document.getElementById('feedback');
+    if (isCorrect) {
+        feedback.className = 'feedback correct';
+        feedback.textContent = 'Correct! Well done!';
+    } else {
+        feedback.className = 'feedback incorrect';
+        feedback.textContent =
+            `Incorrect. The correct answer is: ${describeMultiAnswer(question.answer)}`;
+    }
+    appendExplanation(feedback, question);
+
+    showNextButton();
+}
+
+// Reveal the Next button with the right label. On a two-test subject the last
+// question of Test 1 leads to the transition screen, not the results.
+function showNextButton() {
     const nextBtn = document.getElementById('next-btn');
     nextBtn.style.display = 'block';
-    nextBtn.textContent = currentQuestionIndex === questions.length - 1
-        ? 'See Results'
-        : 'Next Question →';
+
+    const isLast = currentQuestionIndex === questions.length - 1;
+    const finishes = subject().twoTests
+        ? isLast && currentTest === 2
+        : isLast;
+
+    nextBtn.textContent = finishes ? 'See Results' : 'Next Question →';
 }
 
 // Append an optional explanation line under the feedback message
@@ -305,8 +582,8 @@ function appendExplanation(feedback, question) {
 // Display current question
 function showQuestion() {
     if (currentQuestionIndex >= questions.length) {
-        // For ComProg1: Check if we need to transition to Test 2
-        if (currentSubject === 'comprog1' && currentTest === 1) {
+        // Two-test subjects: check if we need to transition to Test 2
+        if (subject().twoTests && currentTest === 1) {
             showTestTransition();
             return;
         }
@@ -322,14 +599,14 @@ function showQuestion() {
 
     // Calculate question number (Test 2 continues the numbering after Test 1)
     let displayQuestionNum = currentQuestionIndex + 1;
-    if (currentSubject === 'comprog1' && currentTest === 2) {
+    if (subject().twoTests && currentTest === 2) {
         displayQuestionNum = test1Questions.length + currentQuestionIndex + 1;
     }
 
-    // Update question number with test indicator for ComProg1
-    if (currentSubject === 'comprog1') {
+    // Update question number with test indicator for two-test subjects
+    if (subject().twoTests) {
         const testLabel = currentTest === 1
-            ? 'Test 1 - MC'
+            ? `Test 1 - ${subject().test1Label}`
             : `Test 2 - ${shortTest2Label()}`;
         document.getElementById('question-number').textContent =
             `${testLabel} | Question ${displayQuestionNum}`;
@@ -346,6 +623,7 @@ function showQuestion() {
     const optionsContainer = document.getElementById('options-container');
     const identificationContainer = document.getElementById('identification-container');
     const traceContainer = document.getElementById('trace-container');
+    const multiContainer = document.getElementById('multi-container');
 
     // Clear previous content
     optionsContainer.innerHTML = '';
@@ -355,6 +633,7 @@ function showQuestion() {
         // Show identification input, hide the others
         optionsContainer.style.display = 'none';
         if (traceContainer) traceContainer.style.display = 'none';
+        if (multiContainer) multiContainer.style.display = 'none';
         if (identificationContainer) {
             identificationContainer.style.display = 'block';
             const answerInput = document.getElementById('answer-input');
@@ -371,9 +650,19 @@ function showQuestion() {
         // Show the tracing table, hide the others
         optionsContainer.style.display = 'none';
         if (identificationContainer) identificationContainer.style.display = 'none';
+        if (multiContainer) multiContainer.style.display = 'none';
         if (traceContainer) {
             traceContainer.style.display = 'block';
             showTraceQuestion(question);
+        }
+    } else if (question.type === 'multi-select') {
+        // Show the modified multiple choice block, hide the others
+        optionsContainer.style.display = 'none';
+        if (identificationContainer) identificationContainer.style.display = 'none';
+        if (traceContainer) traceContainer.style.display = 'none';
+        if (multiContainer) {
+            multiContainer.style.display = 'block';
+            showMultiQuestion(question);
         }
     } else {
         // Show options, hide the input containers
@@ -382,12 +671,15 @@ function showQuestion() {
             identificationContainer.style.display = 'none';
         }
         if (traceContainer) traceContainer.style.display = 'none';
+        if (multiContainer) multiContainer.style.display = 'none';
 
-        // Shuffle options and create buttons
-        const shuffledOptions = shuffleArray([...question.options]);
+        // True/False keeps its fixed order so True is always A and False is B
+        const displayOptions = question.type === 'true-false'
+            ? [...question.options]
+            : shuffleArray([...question.options]);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-        shuffledOptions.forEach((option, index) => {
+        displayOptions.forEach((option, index) => {
             const button = document.createElement('button');
             button.className = 'option-btn';
             button.innerHTML = `
@@ -451,10 +743,7 @@ function selectAnswer(selectedOption, buttonElement) {
     }
     appendExplanation(feedback, question);
 
-    // Show next button
-    document.getElementById('next-btn').style.display = 'block';
-    document.getElementById('next-btn').textContent =
-        currentQuestionIndex === questions.length - 1 ? 'See Results' : 'Next Question →';
+    showNextButton();
 }
 
 // Submit identification answer
@@ -500,20 +789,7 @@ function submitIdentificationAnswer() {
     }
     appendExplanation(feedback, question);
 
-    // Show next button
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.style.display = 'block';
-
-    // Update button text based on position
-    if (currentSubject === 'comprog1') {
-        if (currentTest === 2 && currentQuestionIndex === questions.length - 1) {
-            nextBtn.textContent = 'See Results';
-        } else {
-            nextBtn.textContent = 'Next Question \u2192';
-        }
-    } else {
-        nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'See Results' : 'Next Question \u2192';
-    }
+    showNextButton();
 }
 
 // Show transition screen between Test 1 and Test 2 (ComProg1)
@@ -563,6 +839,7 @@ function startTest2() {
         submitBtn.disabled = false;
     }
     resetTraceInputs();
+    resetMultiInputs();
 
     // Show first Test 2 question
     showQuestion();
@@ -582,14 +859,15 @@ function nextQuestion() {
         submitBtn.disabled = false;
     }
     resetTraceInputs();
+    resetMultiInputs();
 
     showQuestion();
 }
 
 // Update progress bar and text
 function updateProgress() {
-    if (currentSubject === 'comprog1') {
-        // For ComProg1: Calculate progress across both tests (40 total)
+    if (subject().twoTests) {
+        // Calculate progress across both tests combined
         const totalQuestions = test1Questions.length + test2Questions.length;
         let answeredSoFar = currentQuestionIndex;
         if (currentTest === 2) {
@@ -613,7 +891,7 @@ function showResults() {
 
     let totalQuestions, finalScore, percentage;
 
-    if (currentSubject === 'comprog1') {
+    if (subject().twoTests) {
         // Combine Test 1 and Test 2 results
         totalQuestions = test1Questions.length + test2Questions.length;
         finalScore = score; // score already includes both tests
@@ -628,30 +906,17 @@ function showResults() {
     document.getElementById('max-score').textContent = totalQuestions;
     document.getElementById('score-percentage').textContent = `${percentage}%`;
 
-    // Set message based on score
-    let message = '';
-    if (currentSubject === 'comprog1') {
-        if (percentage >= 90) {
-            message = 'Excellent! You have mastered C++ fundamentals!';
-        } else if (percentage >= 70) {
-            message = 'Great job! You have a solid understanding of C++!';
-        } else if (percentage >= 50) {
-            message = 'Good effort! Keep practicing your C++ skills!';
-        } else {
-            message = 'Keep practicing! Review the C++ concepts and try again.';
-        }
-    } else {
-        if (percentage >= 90) {
-            message = 'Excellent! You really know your computing history!';
-        } else if (percentage >= 70) {
-            message = 'Great job! You have a solid understanding!';
-        } else if (percentage >= 50) {
-            message = 'Good effort! Keep studying to improve!';
-        } else {
-            message = 'Keep practicing! Review the study guide and try again.';
-        }
+    // Set message based on score, using this subject's ladder (90 / 70 / 50)
+    const messages = subject().messages;
+    let tier = 3;
+    if (percentage >= 90) {
+        tier = 0;
+    } else if (percentage >= 70) {
+        tier = 1;
+    } else if (percentage >= 50) {
+        tier = 2;
     }
-    document.getElementById('score-message').textContent = message;
+    document.getElementById('score-message').textContent = messages[tier];
 
     // Update progress bar to 100%
     document.getElementById('progress-bar').style.width = '100%';
@@ -665,9 +930,9 @@ function reviewAnswers() {
     const reviewContainer = document.getElementById('review-container');
     reviewContainer.innerHTML = '';
 
-    // For ComProg1, combine Test 1 and Test 2 answers
+    // For two-test subjects, combine Test 1 and Test 2 answers
     let allAnswers = userAnswers;
-    if (currentSubject === 'comprog1') {
+    if (subject().twoTests) {
         allAnswers = [...test1Answers, ...userAnswers.slice(test1Answers.length)];
     }
 
@@ -675,11 +940,11 @@ function reviewAnswers() {
         const item = document.createElement('div');
         item.className = `review-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
 
-        // Add test indicator for ComProg1
+        // Add test indicator for two-test subjects
         let testLabel = '';
-        if (currentSubject === 'comprog1') {
+        if (subject().twoTests) {
             testLabel = index < test1Questions.length
-                ? '(Test 1 - MC)'
+                ? `(Test 1 - ${subject().test1Label})`
                 : `(Test 2 - ${shortTest2Label()})`;
         }
 
@@ -742,15 +1007,17 @@ function restartQuiz() {
         submitBtn.disabled = false;
     }
     resetTraceInputs();
+    resetMultiInputs();
 
     initQuiz();
 }
 
 // Link back to the quiz list, keeping the subject tab the user came from
 function homeUrl() {
-    return currentSubject === 'comprog1'
-        ? 'index.html?subject=comprog1'
-        : 'index.html';
+    // ITC is the tab index.html opens on by default, so it needs no parameter
+    return currentSubject === 'itc' || !SUBJECTS[currentSubject]
+        ? 'index.html'
+        : `index.html?subject=${currentSubject}`;
 }
 
 // Go back to home page

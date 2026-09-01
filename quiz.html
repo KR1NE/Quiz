@@ -78,6 +78,21 @@
                         <button class="btn submit-btn" id="trace-submit-btn" onclick="submitTraceAnswer()">Submit Answer</button>
                     </div>
 
+                    <!-- Modified Multiple Choice (for Test 1 of the Theology quiz) -->
+                    <div class="multi-container" id="multi-container" style="display: none;">
+                        <div class="multi-count-row">
+                            <label class="multi-count-label" for="multi-count">Number of correct choices:</label>
+                            <input type="number" id="multi-count" class="multi-count" min="1" max="5"
+                                   inputmode="numeric" autocomplete="off">
+                        </div>
+                        <div class="multi-options" id="multi-options">
+                            <!-- Choice rows will be inserted here -->
+                        </div>
+                        <div class="multi-hint" id="multi-hint"></div>
+                        <button class="btn submit-btn" id="multi-submit-btn"
+                                onclick="submitMultiAnswer()" disabled>Submit Answer</button>
+                    </div>
+
                     <div class="feedback" id="feedback"></div>
 
                     <button class="btn next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">
@@ -151,6 +166,8 @@
     <script src="js/questions/comprog1-week1.js"></script>
     <script src="js/questions/comprog1-week4.js"></script>
     <script src="js/questions/comprog1-week5.js"></script>
+    <!-- Theology Quiz Questions -->
+    <script src="js/questions/theology.js"></script>
     <script src="js/quiz-engine.js"></script>
 </body>
 </html>
