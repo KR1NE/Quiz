@@ -1,5 +1,9 @@
-// Theology: Understanding Theology
-// Source of truth: UNDERSTANDING-THEOLOGY-EXAM-REVIEWER.pdf (24 pages, sections I-XXVIII)
+// Theology: Understanding Theology / Faith, Theology and Philosophy
+// Source of truth (in this order of precedence):
+//   1. UNDERSTANDING-THEOLOGY-Daigler-Final.pptx      (59 slides)
+//   2. FAITH-THEOLOGY-AND-PHILOSOPHY.pptx, N. Rogon   (12 slides)
+//   3. UNDERSTANDING-THEOLOGY-EXAM-REVIEWER.pdf       (24-page summary of deck 1)
+// Where the PDF summary paraphrases or reorders the decks, the decks win.
 // Test 1: modified multiple choice - the student enters how many choices are
 //         correct and ticks exactly those choices. Choice E ("None of the above")
 //         is added by the engine, so each question lists only A-D here.
@@ -9,7 +13,7 @@
 const theologyTest1 = [
     {
         type: "multi-select",
-        question: "According to the reviewer, which of the following are true of science?",
+        question: "According to the lesson, which of the following are true of science?",
         options: [
             "The word comes from the Latin scientia, meaning knowledge.",
             "It is described as the systematic study of the physical and natural world.",
@@ -33,7 +37,7 @@ const theologyTest1 = [
     },
     {
         type: "multi-select",
-        question: "Which are reasons the reviewer gives for theology being regarded as the \"Queen of All Sciences\"?",
+        question: "Which are reasons the lesson gives for theology being regarded as the \"Queen of All Sciences\"?",
         options: [
             "It dealt with both the natural world and the divine world.",
             "It addressed questions such as why we exist and what the purpose of human life is.",
@@ -53,11 +57,11 @@ const theologyTest1 = [
             "Plato used the term in The Republic to refer to \"discourse on god\"."
         ],
         answer: ["A", "B", "D"],
-        explanation: "Theology is theos plus logos - discourse about God. The reviewer credits the first use to Plato in the 4th century BC in The Republic. Aquinas comes much later and is associated with theology's scientific character, not with coining the word."
+        explanation: "Theology is theos plus logos - discourse about God. The lesson credits the first use to Plato in the 4th century BC in The Republic. Aquinas comes much later and is associated with theology's scientific character, not with coining the word."
     },
     {
         type: "multi-select",
-        question: "According to the reviewer's proposed definition, theology is which of the following?",
+        question: "According to the lesson's proposed definition, theology is which of the following?",
         options: [
             "A rational discourse and prayerful reflection on the mystery of God.",
             "Concerned with God's relationship with humanity and creation.",
@@ -65,7 +69,7 @@ const theologyTest1 = [
             "Founded on Sacred Scripture and Church teachings."
         ],
         answer: ["A", "B", "C", "D"],
-        explanation: "All four belong to the single definition the reviewer proposes. Notice that theology is not simply \"studying God\" - the definition deliberately includes prayer, revelation, human relationship and creation."
+        explanation: "All four belong to the single definition the lesson proposes. Notice that theology is not simply \"studying God\" - the definition deliberately includes prayer, revelation, human relationship and creation."
     },
     {
         type: "multi-select",
@@ -74,10 +78,10 @@ const theologyTest1 = [
             "The Latin fides means \"to lift the veil\".",
             "The Greek pistis carries the sense of faith, belief, conviction and assurance.",
             "The Latin fidere means \"to trust\".",
-            "The reviewer summarises faith as certainty produced by proof."
+            "The lesson summarises faith as certainty produced by proof."
         ],
         answer: ["B", "C"],
-        explanation: "Fides simply means faith and fidere means to trust - the reviewer's shorthand is Faith = TRUST. \"To lift the veil\" is revelare, the root of revelation, and faith concerns what is not directly seen or proven."
+        explanation: "Fides simply means faith and fidere means to trust - the lesson's shorthand is Faith = TRUST. \"To lift the veil\" is revelare, the root of revelation, and faith concerns what is not directly seen or proven."
     },
     {
         type: "multi-select",
@@ -93,7 +97,7 @@ const theologyTest1 = [
     },
     {
         type: "multi-select",
-        question: "Which are among the five characteristics of faith presented in the reviewer?",
+        question: "Which are among the five characteristics of faith presented in the lesson?",
         options: [
             "Faith is a grace.",
             "Faith is a human act.",
@@ -113,11 +117,11 @@ const theologyTest1 = [
             "Faith is a free human response."
         ],
         answer: ["C"],
-        explanation: "This is exactly the reviewer's formulation of the fourth characteristic: not \"I believe, so I do not need to understand\" but \"I believe, therefore I want to understand more\". The other three characteristics are real, but nothing in the student's statement illustrates them."
+        explanation: "This is exactly the lesson's formulation of the fourth characteristic: not \"I believe, so I do not need to understand\" but \"I believe, therefore I want to understand more\". The other three characteristics are real, but nothing in the student's statement illustrates them."
     },
     {
         type: "multi-select",
-        question: "Which are among the things the reviewer says faith IS?",
+        question: "Which are among the things the lesson says faith IS?",
         options: [
             "Faith is trust, expressed by the term fides qua.",
             "Faith is opposed to reason.",
@@ -125,11 +129,11 @@ const theologyTest1 = [
             "Faith is dynamic and ongoing; it can grow, struggle, mature and encounter doubts."
         ],
         answer: ["A", "C", "D"],
-        explanation: "Fides qua is the faith by which we believe - personal trust rather than stored religious information. The reviewer is explicit that faith is NOT opposed to reason: faith seeks truth and tries to understand it, so the two work together."
+        explanation: "Fides qua is the faith by which we believe - personal trust rather than stored religious information. The lesson is explicit that faith is NOT opposed to reason: faith seeks truth and tries to understand it, so the two work together."
     },
     {
         type: "multi-select",
-        question: "Which of the following attitudes are contrary to authentic faith as the reviewer describes it?",
+        question: "Which of the following attitudes are contrary to authentic faith as the lesson describes it?",
         options: [
             "A person performs a religious practice in a fixed way, believing this guarantees the outcome they want.",
             "A person can name every doctrine of their religion, but this never changes how they live.",
@@ -137,11 +141,11 @@ const theologyTest1 = [
             "A person insists their faith is only between them and God and concerns no one else."
         ],
         answer: ["A", "B", "C", "D"],
-        explanation: "Each one matches an item on the reviewer's list of what faith is NOT: magic or superstition, mere intellectual assent, blind belief, and private individualism. Authentic faith engages reason and shows itself in how a person lives and relates to others."
+        explanation: "Each one matches an item on the lesson's list of what faith is NOT: magic or superstition, mere intellectual assent, blind belief, and private individualism. Authentic faith engages reason and shows itself in how a person lives and relates to others."
     },
     {
         type: "multi-select",
-        question: "According to the reviewer, in which of the following does authentic faith consist?",
+        question: "According to the lesson, in which of the following does authentic faith consist?",
         options: [
             "Believing without engaging reason at all.",
             "Memorising religious teachings as the essence of faith.",
@@ -149,7 +153,7 @@ const theologyTest1 = [
             "Keeping faith entirely private and unconnected from society."
         ],
         answer: ["E"],
-        explanation: "None of the above. All four are drawn from the reviewer's list of what faith is NOT - blind belief, mere intellectual assent, magic or superstition, and private individualism. When every choice is wrong, E is the answer."
+        explanation: "None of the above. All four are drawn from the lesson's list of what faith is NOT - blind belief, mere intellectual assent, magic or superstition, and private individualism. When every choice is wrong, E is the answer."
     },
     {
         type: "multi-select",
@@ -185,7 +189,7 @@ const theologyTest1 = [
             "Universalizing Faith"
         ],
         answer: ["B"],
-        explanation: "The reviewer's shorthand for the progression is imagination, then literal stories, then group beliefs, then personal reflection. Taking the stories literally places this person at stage 2, Mythic-Literal Faith."
+        explanation: "The lesson's shorthand for the progression is imagination, then literal stories, then group beliefs, then personal reflection. Taking the stories literally places this person at stage 2, Mythic-Literal Faith."
     },
     {
         type: "multi-select",
@@ -201,7 +205,7 @@ const theologyTest1 = [
     },
     {
         type: "multi-select",
-        question: "In the theology process, praxis means putting theological understanding into practice. Which of the following situations are examples of praxis as the reviewer lists it?",
+        question: "In the theology process, praxis means putting theological understanding into practice. Which of the following situations are examples of praxis as the lesson lists it?",
         options: [
             "A believer lets what they have come to understand shape how they live day to day.",
             "A believer takes part in the mission of their community.",
@@ -209,23 +213,23 @@ const theologyTest1 = [
             "A believer joins in the worship of their community."
         ],
         answer: ["A", "B", "C", "D"],
-        explanation: "The reviewer names four forms of praxis - life, mission, justice and worship - and all four situations match one of them. Praxis is the step where theology stops being an idea and becomes something lived."
+        explanation: "The lesson names four forms of praxis - life, mission, justice and worship - and all four situations match one of them. Praxis is the step where theology stops being an idea and becomes something lived."
     },
     {
         type: "multi-select",
-        question: "Which are correct about the theology process as the reviewer sets it out?",
+        question: "Which are correct about the theology process as the lesson sets it out?",
         options: [
             "It begins with revelation and the human response of faith.",
             "It ends permanently once theology has been articulated.",
-            "Discernment comes before theological reflection.",
+            "Praxis comes first, before theology has been articulated.",
             "New human experience leads back into further reflection, making it a cycle."
         ],
         answer: ["A", "D"],
-        explanation: "The full sequence is revelation, faith, theological questions, reflection, discernment, theology, praxis, new experience - and the new experience feeds back into reflection. So reflection comes before discernment, and the process never simply stops."
+        explanation: "On the deck's diagram, God's self-revelation leads to faith, which opens into theological questions, reflection and discernment; these converge on theology, which then issues in praxis - life, mission, justice and worship - before new human experience loops back. So praxis follows theology rather than preceding it, and the process never simply stops."
     },
     {
         type: "multi-select",
-        question: "Which are correct about Thomas Aquinas as presented in the reviewer?",
+        question: "Which are correct about Thomas Aquinas as presented in the lesson?",
         options: [
             "He was an Italian Dominican friar and a Doctor of the Church.",
             "He held that theology is a science of faith.",
@@ -245,7 +249,7 @@ const theologyTest1 = [
             "Calling theology subalternate means it is inferior and less valuable than the other sciences."
         ],
         answer: ["B", "C"],
-        explanation: "Probable science means theology gives credible, reasoned understanding without claiming to exhaust divine mystery. Subalternate is about the source of its principles - God's knowledge through revelation - and the reviewer states plainly that it does not mean inferior."
+        explanation: "Probable science means theology gives credible, reasoned understanding without claiming to exhaust divine mystery. Subalternate is about the source of its principles - God's knowledge through revelation - and the lesson states plainly that it does not mean inferior."
     },
     {
         type: "multi-select",
@@ -293,7 +297,7 @@ const theologyTest1 = [
             "Revisioning"
         ],
         answer: ["C"],
-        explanation: "Reframing is the step where the experience is looked at through the lens of faith and connected to God, Scripture, Church teachings and meaning. Retrieving and Retelling have already been done, and Revisioning comes later, when a new understanding or way of living emerges."
+        explanation: "Reframing is the step where the experience is reflected on in the light of faith and reconnected to the Christian story - God, the Sacred Scriptures, the teachings of the Church. Note the two models: Trokan's own has five steps, with reconnecting listed separately, while the revised model used in class has four, because reframing absorbs reconnecting. The four options here are that revised model."
     },
     {
         type: "multi-select",
@@ -306,6 +310,126 @@ const theologyTest1 = [
         ],
         answer: ["A", "C"],
         explanation: "The two roles are easy to swap. Human experience provides the matter or context - the situation being reflected on - while Sacred Scripture provides the basis or reference point for interpreting that situation in light of God's revelation."
+    },
+    {
+        type: "multi-select",
+        question: "Which correctly state the difference between philosophizing and theologizing?",
+        options: [
+            "Philosophizing seeks understanding through reason.",
+            "Theologizing sets reason aside and relies on faith alone.",
+            "Theologizing seeks understanding through reason illuminated by faith and revelation.",
+            "Theologizing can be summed up as \"I use reason to understand reality in the light of faith and God's revelation\"."
+        ],
+        answer: ["A", "C", "D"],
+        explanation: "Both disciplines reason. The difference is the light they reason by: philosophizing is \"I use reason to understand reality\", theologizing is that same sentence with \"in the light of faith and God's revelation\" added. Theologizing never abandons reason."
+    },
+    {
+        type: "multi-select",
+        question: "Which of the following describe someone theologizing rather than philosophizing?",
+        options: [
+            "A person reflects on a personal loss and asks what the Sacred Scriptures and the teachings of the Church reveal about it.",
+            "A person reasons carefully about what makes an action just, using argument alone.",
+            "A person interprets their lived experience in the light of God's revelation.",
+            "A person moves from experience to question to reason to argument, without reference to revelation."
+        ],
+        answer: ["A", "C"],
+        explanation: "A and C both read experience in the light of revelation, which is what makes them theologizing. B and D describe the philosophizing formula exactly - experience, question, reason, argument, understanding - carried out by reason on its own."
+    },
+    {
+        type: "multi-select",
+        question: "Which are correct about the formulas given for philosophizing and theologizing?",
+        options: [
+            "Philosophizing runs: experience, question, reason, argument, understanding.",
+            "Theologizing begins with lived experience.",
+            "Theologizing ends with understanding.",
+            "Within theological reflection the steps are revelation, faith, reason, understanding and discernment."
+        ],
+        answer: ["A", "B", "D"],
+        explanation: "Theologizing does not stop at understanding - it ends in response or praxis. That final step is the whole point: theological understanding is meant to issue in faithful action, not merely in a conclusion."
+    },
+    {
+        type: "multi-select",
+        question: "Which single statement best captures how philosophy is distinguished from theology?",
+        options: [
+            "Philosophy seeks truth through the light of faith, while theology uses the natural light of reason.",
+            "Philosophy seeks truth through the natural light of reason, while theology seeks understanding of the mysteries revealed by God through the light of faith, employing reason as its instrument.",
+            "Both philosophy and theology begin from divine revelation.",
+            "Theology sets reason aside once faith is involved."
+        ],
+        answer: ["B"],
+        explanation: "The lights are the distinction and they are easy to swap: philosophy works by the natural light of reason, theology by the light of faith. But theology still employs reason - as its instrument, not as its starting light."
+    },
+    {
+        type: "multi-select",
+        question: "Theological praxis means putting faith and theological understanding into faithful action in concrete life. Which of these situations are examples of it?",
+        options: [
+            "Having reflected on the Church's teaching about the poor, a believer begins volunteering at a shelter.",
+            "A believer reads widely in theology and forms an opinion, but changes nothing about how they live.",
+            "What a believer has come to understand about God's mercy changes how they treat a difficult family member.",
+            "A believer memorises the definition of praxis in order to pass an examination."
+        ],
+        answer: ["A", "C"],
+        explanation: "Praxis is understanding that becomes action in concrete life. B and D stop at the level of information - which is precisely the failure the lesson calls mere intellectual assent."
+    },
+    {
+        type: "multi-select",
+        question: "Which are correct about Anselm of Canterbury and his Proslogion?",
+        options: [
+            "He held the office of archbishop of Canterbury from 1093 to 1109.",
+            "He wrote, \"I do not seek to understand that I may believe, but I believe in order to understand\".",
+            "He was an abbot as well as a Benedictine monk.",
+            "His principle is fides quaerens intellectum, faith seeking understanding."
+        ],
+        answer: ["A", "B", "C", "D"],
+        explanation: "All four are accurate. The Proslogion line is the sharpest statement of his principle: belief comes first and becomes the road to understanding, rather than understanding being a precondition for belief."
+    },
+    {
+        type: "multi-select",
+        question: "Which are correct about John Trokan and the model of theologizing used in class?",
+        options: [
+            "He is a Professor of Theology at Mt. St. Joseph University in Ohio.",
+            "His article \"Models in Theological Reflection (Theory and Praxis)\" appeared in the Journal of Catholic Education in 1997.",
+            "Trokan's own model lists reconnecting as a step distinct from reframing.",
+            "The revised model used in class keeps all five of Trokan's steps unchanged."
+        ],
+        answer: ["A", "B", "C"],
+        explanation: "Trokan's own model has five steps - retrieving, retelling, reframing, reconnecting, revisioning. The revised model used in class has four, because reframing is widened to include reconnecting the experience to the Christian story. Knowing which model is being asked about is the whole trick here."
+    },
+    {
+        type: "multi-select",
+        question: "Which are correct about how theology's standing as a science is explained?",
+        options: [
+            "Sacred doctrine is compared to a musician who accepts on authority the principles taught by a mathematician.",
+            "Theology is described as a form of knowledge with a probable certitude.",
+            "In Scholastic philosophy, subalternation concerns the source of a science's principles.",
+            "Theology is contrasted with the empirical and demonstrative sciences."
+        ],
+        answer: ["A", "B", "C", "D"],
+        explanation: "All four are accurate. The analogy is musician and mathematician: just as the musician takes the mathematician's principles on authority, sacred doctrine takes its principles from God's revelation. Subalternation is about where principles come from, not about value or rank."
+    },
+    {
+        type: "multi-select",
+        question: "Which are correct about James W. Fowler III's background and his account of faith?",
+        options: [
+            "He was Professor of Theology and Human Development at Emory University.",
+            "He was a minister in the United Methodist Church.",
+            "His book Stages of Faith was published in 1991.",
+            "He treated faith as meaning-making - seeing oneself in relation to others through a shared meaning and purpose."
+        ],
+        answer: ["A", "B", "D"],
+        explanation: "Fowler taught at Emory and was a United Methodist minister, and he treated faith as meaning-making. Stages of Faith appeared in 1981, not 1991."
+    },
+    {
+        type: "multi-select",
+        question: "Which of the following approaches to theology are named on the closing slide of the lesson?",
+        options: [
+            "Existentialist theology",
+            "Analytic theology",
+            "Process theology",
+            "Systematic theology"
+        ],
+        answer: ["E"],
+        explanation: "None of the above. The approaches actually named are Dogmatic, Moral, Pastoral, Liberation, Feminist and Indigenous, alongside theologies in other faith traditions such as Islamic, Buddhist and Jewish. None of the four listed here appears."
     }
 ];
 
@@ -333,24 +457,24 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "The reviewer states that the term theology was first used by Aristotle in his Metaphysics.",
+        question: "The lesson states that the term theology was first used by Aristotle in his Metaphysics.",
         options: ["True", "False"],
         answer: "False",
-        explanation: "The reviewer credits Plato, in The Republic, in the 4th century BC, referring to \"discourse on god\"."
+        explanation: "The lesson credits Plato, in The Republic, in the 4th century BC, referring to \"discourse on god\"."
     },
     {
         type: "true-false",
-        question: "One reason the reviewer gives for there being many theologies is that the mystery of God is inexhaustible.",
+        question: "One reason the lesson gives for there being many theologies is that the mystery of God is inexhaustible.",
         options: ["True", "False"],
         answer: "True",
         explanation: "God cannot be completely understood from only one perspective. The other reasons are the diversity of human experience, the need for theology to be incarnated in culture and context, and the new questions that keep arising."
     },
     {
         type: "true-false",
-        question: "Hebrews 11:1 defines faith in terms of confidence in what is hoped for and conviction regarding what is not seen.",
+        question: "Hebrews 11:1 is quoted as: \"Now faith is the substance of things hoped for, the evidence of things not seen.\"",
         options: ["True", "False"],
         answer: "True",
-        explanation: "This is the scriptural definition the reviewer cites: faith involves trusting in what is not necessarily visible or physically proven."
+        explanation: "This is the scriptural definition given on the slide, word for word. The key terms are substance and evidence: faith involves trusting in what is not necessarily visible or physically proven."
     },
     {
         type: "true-false",
@@ -361,17 +485,17 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "According to the reviewer, faith is more certain than human knowledge because it is founded on the word of God.",
+        question: "According to the lesson, faith is more certain than human knowledge because it is founded on the word of God.",
         options: ["True", "False"],
         answer: "True",
         explanation: "This is the third of the five characteristics of faith - faith is certain."
     },
     {
         type: "true-false",
-        question: "Because faith is a gift from God, the reviewer concludes that a person may be required to believe.",
+        question: "Because faith is a gift from God, the lesson concludes that a person may be required to believe.",
         options: ["True", "False"],
         answer: "False",
-        explanation: "The opposite. The fifth characteristic is that faith is a free human response - the reviewer cites the Catechism to stress that the act of faith is inherently free and nobody should be forced to believe."
+        explanation: "The opposite. The fifth characteristic is that faith is a free human response - the lesson cites the Catechism to stress that the act of faith is inherently free and nobody should be forced to believe."
     },
     {
         type: "true-false",
@@ -382,7 +506,7 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "The reviewer presents faith as purely individual, summed up in the phrase \"I believe\".",
+        question: "The lesson presents faith as purely individual, summed up in the phrase \"I believe\".",
         options: ["True", "False"],
         answer: "False",
         explanation: "Faith is ecclesial and communal: \"I believe\" exists within \"We believe\". Faith is not purely individual - it exists within a community."
@@ -392,7 +516,7 @@ const theologyTest2 = [
         question: "Authentic faith engages reason, experience, relationships, society, history and creation.",
         options: ["True", "False"],
         answer: "True",
-        explanation: "This is the reviewer's answer to the claim that faith is blind belief - authentic faith engages all of these rather than shutting them out."
+        explanation: "This is the lesson's answer to the claim that faith is blind belief - authentic faith engages all of these rather than shutting them out."
     },
     {
         type: "true-false",
@@ -410,14 +534,14 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "The reviewer presents the Trinity as a mystery that can eventually be fully grasped once a person has studied enough theology.",
+        question: "The lesson presents the Trinity as a mystery that can eventually be fully grasped once a person has studied enough theology.",
         options: ["True", "False"],
         answer: "False",
-        explanation: "The Trinity is presented as a deep and unfathomable mystery. The reviewer's point is the reverse: the more we know, the more there is to know."
+        explanation: "The Trinity is presented as a deep and unfathomable mystery. The lesson's point is the reverse: the more we know, the more there is to know."
     },
     {
         type: "true-false",
-        question: "According to the reviewer, faith is expressed only in a person's relationship with God, and not toward other people or creation.",
+        question: "According to the lesson, faith is expressed only in a person's relationship with God, and not toward other people or creation.",
         options: ["True", "False"],
         answer: "False",
         explanation: "Faith is expressed through love, compassion and mercy, and it extends toward God, other human beings and creation."
@@ -445,10 +569,10 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "Describing theology as a subalternate science means the reviewer considers it inferior to the other sciences.",
+        question: "Describing theology as a subalternate science means the lesson considers it inferior to the other sciences.",
         options: ["True", "False"],
         answer: "False",
-        explanation: "Subalternation refers to where theology's principles come from - God's knowledge, through revelation. The reviewer states explicitly that subalternate does not mean inferior or less valuable."
+        explanation: "Subalternation refers to where theology's principles come from - God's knowledge, through revelation. The lesson states explicitly that subalternate does not mean inferior or less valuable."
     },
     {
         type: "true-false",
@@ -473,7 +597,7 @@ const theologyTest2 = [
     },
     {
         type: "true-false",
-        question: "In contemporary theology as the reviewer presents it, faith is the lens, human experience is the context, and theology is the dialogue between them.",
+        question: "In contemporary theology as the lesson presents it, faith is the lens, human experience is the context, and theology is the dialogue between them.",
         options: ["True", "False"],
         answer: "True",
         explanation: "We interpret experience through faith while also re-understanding faith through our experiences - an ongoing dialogue rather than a one-way reading."
@@ -484,6 +608,76 @@ const theologyTest2 = [
         options: ["True", "False"],
         answer: "True",
         explanation: "Rahner's line summarises why there are many theologies: new situations, such as climate, gender and AI, raise new theological questions."
+    },
+    {
+        type: "true-false",
+        question: "Philosophizing seeks understanding through reason, while theologizing seeks understanding through reason illuminated by faith and revelation.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "This is the core distinction. Both use reason; only theologizing reasons by the light of faith and God's revelation."
+    },
+    {
+        type: "true-false",
+        question: "The formula given for theologizing ends with response or praxis.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "It runs: lived experience, then theological reflection (revelation, faith, reason, understanding, discernment), then response or praxis. It does not stop at understanding."
+    },
+    {
+        type: "true-false",
+        question: "Philosophy seeks the truth through the light of faith, while theology works by the natural light of reason.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The two lights are the other way round. Philosophy seeks truth through the natural light of reason; theology seeks understanding of revealed mysteries through the light of faith, employing reason as its instrument."
+    },
+    {
+        type: "true-false",
+        question: "Theological praxis means putting faith and theological understanding into faithful action in concrete life.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Praxis is the point at which theology stops being an idea and becomes something lived - in life, mission, justice and worship."
+    },
+    {
+        type: "true-false",
+        question: "Faith is presented purely as a relationship, and not as a mission.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The lesson states it as both: FAITH is a relationship and a mission. Reducing it to a private relationship is the error the lesson calls private individualism."
+    },
+    {
+        type: "true-false",
+        question: "James W. Fowler III was Professor of Theology and Human Development at Emory University and a minister in the United Methodist Church.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Both details come from the slide introducing him, alongside Stages of Faith (1981) and the influence of Piaget and Kohlberg."
+    },
+    {
+        type: "true-false",
+        question: "Aquinas illustrates theology's dependence on higher principles with the example of a student learning advanced mathematics.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The analogy is a musician, not a student: just as the musician accepts on authority the principles taught by the mathematician, sacred science is established on principles revealed by God."
+    },
+    {
+        type: "true-false",
+        question: "The revised model of theologizing used in class has five steps.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "It has four - retrieving, retelling, reframing and revisioning - because reframing is widened to take in reconnecting the experience to the Christian story. It is Trokan's own model that lists five, with reconnecting kept separate."
+    },
+    {
+        type: "true-false",
+        question: "In Scholastic philosophy, subalternation refers to a science's value or rank.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "It refers to the source of its principles. Theology is subalternate because its principles come from a higher science - the knowledge God and the blessed possess - not because it ranks below anything."
+    },
+    {
+        type: "true-false",
+        question: "Liberation and Feminist theology are among the approaches named, and Islamic, Buddhist and Jewish theologies are named as examples in other faith traditions.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The closing slide lists Dogmatic, Moral, Pastoral, Liberation, Feminist and Indigenous approaches, then Islamic, Buddhist and Jewish theologies in other faith traditions - an illustration of why there are many theologies."
     }
 ];
 
@@ -491,7 +685,7 @@ const theologyTest2 = [
 const theologyQuestions = {
     test1: theologyTest1,
     test2: theologyTest2,
-    title: "Theology: Understanding Theology",
+    title: "Theology: Understanding Theology, Faith & Philosophy",
     test2Label: "True or False",
-    test2Info: "25 questions - Choose True or False"
+    test2Info: "35 questions - Choose True or False"
 };

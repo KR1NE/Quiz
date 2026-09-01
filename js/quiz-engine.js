@@ -43,7 +43,7 @@ const comprog1QuizData = {
 
 // Theology Quiz titles
 const theologyQuizTitles = {
-    1: "Theology: Understanding Theology"
+    1: "Theology: Understanding Theology, Faith & Philosophy"
 };
 
 // Theology Quiz data mapping
@@ -90,10 +90,10 @@ const SUBJECTS = {
         defaultTest2Label: 'True or False',
         defaultTest2Info: 'Choose True or False',
         messages: [
-            'Excellent! You have mastered the Theology reviewer!',
+            'Excellent! You have mastered the Theology lessons!',
             'Great job! You have a solid grasp of the material!',
             'Good effort! Keep reviewing the key concepts!',
-            'Keep studying! Review the reviewer and try again.'
+            'Keep studying! Go back over the lessons and try again.'
         ]
     }
 };
