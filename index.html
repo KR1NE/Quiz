@@ -26,7 +26,6 @@
         <div class="subject-tabs">
             <button class="tab-btn active" onclick="switchSubject('itc')" id="tab-itc">ITC</button>
             <button class="tab-btn" onclick="switchSubject('comprog1')" id="tab-comprog1">ComProg1</button>
-            <button class="tab-btn" onclick="switchSubject('theology')" id="tab-theology">Theology</button>
         </div>
 
         <!-- ITC Quizzes -->
@@ -179,21 +178,6 @@
             </div>
         </main>
 
-        <!-- Theology Quizzes (Hidden by default) -->
-        <main class="quiz-grid" id="theology-quizzes" style="display: none;">
-            <div class="quiz-card" onclick="startTheologyQuiz(1)">
-                <div class="quiz-number">Reviewer</div>
-                <h2>Understanding Theology, Faith &amp; Philosophy</h2>
-                <p class="quiz-parts">Both Lecture Decks</p>
-                <ul class="quiz-topics">
-                    <li>Theology as a Science, Etymology &amp; the Thinkers</li>
-                    <li>Faith, Revelation &amp; Fowler's Stages</li>
-                    <li>Theologizing, Trokan's Model &amp; Philosophy vs Theology</li>
-                </ul>
-                <span class="quiz-count">70 Questions (35 Modified MC + 35 T/F)</span>
-            </div>
-        </main>
-
         <footer>
             <p>Based on the History of Computing Study Guide</p>
         </footer>
@@ -209,51 +193,36 @@
             window.location.href = `quiz.html?subject=comprog1&quiz=${quizNumber}`;
         }
 
-        function startTheologyQuiz(quizNumber) {
-            window.location.href = `quiz.html?subject=theology&quiz=${quizNumber}`;
-        }
-
-        // One entry per tab. ITC is first, so it is the default view.
-        const SUBJECT_TABS = {
-            itc: {
-                grid: 'itc-quizzes',
-                tab: 'tab-itc',
-                title: 'History of Computing',
-                subtitle: 'Practice Quizzes - From the Pascaline to Generative AI'
-            },
-            comprog1: {
-                grid: 'comprog1-quizzes',
-                tab: 'tab-comprog1',
-                title: 'Computer Programming 1',
-                subtitle: 'Practice Quizzes - C++ Fundamentals'
-            },
-            theology: {
-                grid: 'theology-quizzes',
-                tab: 'tab-theology',
-                title: 'Understanding Theology',
-                subtitle: 'Practice Quizzes - Faith, Theology and Philosophy'
-            }
-        };
-
         function switchSubject(subject) {
-            const chosen = SUBJECT_TABS[subject] ? subject : 'itc';
+            const itcQuizzes = document.getElementById('itc-quizzes');
+            const comprog1Quizzes = document.getElementById('comprog1-quizzes');
+            const tabItc = document.getElementById('tab-itc');
+            const tabComprog1 = document.getElementById('tab-comprog1');
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
 
-            Object.keys(SUBJECT_TABS).forEach(function(key) {
-                const cfg = SUBJECT_TABS[key];
-                const isActive = key === chosen;
-                document.getElementById(cfg.grid).style.display = isActive ? 'grid' : 'none';
-                document.getElementById(cfg.tab).classList.toggle('active', isActive);
-            });
-
-            document.getElementById('page-title').textContent = SUBJECT_TABS[chosen].title;
-            document.getElementById('page-subtitle').textContent = SUBJECT_TABS[chosen].subtitle;
+            if (subject === 'itc') {
+                itcQuizzes.style.display = 'grid';
+                comprog1Quizzes.style.display = 'none';
+                tabItc.classList.add('active');
+                tabComprog1.classList.remove('active');
+                pageTitle.textContent = 'History of Computing';
+                pageSubtitle.textContent = 'Practice Quizzes - From the Pascaline to Generative AI';
+            } else {
+                itcQuizzes.style.display = 'none';
+                comprog1Quizzes.style.display = 'grid';
+                tabItc.classList.remove('active');
+                tabComprog1.classList.add('active');
+                pageTitle.textContent = 'Computer Programming 1';
+                pageSubtitle.textContent = 'Practice Quizzes - C++ Fundamentals';
+            }
         }
 
-        // Open the tab the visitor came back from, e.g. index.html?subject=theology
+        // Open the tab the visitor came back from, e.g. index.html?subject=comprog1
         document.addEventListener('DOMContentLoaded', function() {
             const subject = new URLSearchParams(window.location.search).get('subject');
-            if (subject && SUBJECT_TABS[subject]) {
-                switchSubject(subject);
+            if (subject === 'comprog1') {
+                switchSubject('comprog1');
             }
         });
     </script>
