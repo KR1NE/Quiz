@@ -29,7 +29,9 @@ const comprog1QuizTitles = {
     2: "ComProg1: Variables, Operators & Functions (Set 2)",
     3: "ComProg1 Week 1: Introduction to Computer Programming",
     4: "ComProg1 Week 4: Input and Output with Streams",
-    5: "ComProg1 Week 5: Operators for Fundamental Types"
+    5: "ComProg1 Week 5: Operators for Fundamental Types",
+    6: "ComProg1 Week 6: Control Flow 1 (Selection)",
+    7: "ComProg1 Week 7: Control Flow 2 (Repetition)"
 };
 
 // ComProg1 Quiz data mapping
@@ -38,7 +40,9 @@ const comprog1QuizData = {
     2: typeof comprog1Quiz2Questions !== 'undefined' ? comprog1Quiz2Questions : null,
     3: typeof comprog1Week1Questions !== 'undefined' ? comprog1Week1Questions : null,
     4: typeof comprog1Week4Questions !== 'undefined' ? comprog1Week4Questions : null,
-    5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null
+    5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null,
+    6: typeof comprog1Week6Questions !== 'undefined' ? comprog1Week6Questions : null,
+    7: typeof comprog1Week7Questions !== 'undefined' ? comprog1Week7Questions : null
 };
 
 // Labels for the second test of the current ComProg1 quiz
