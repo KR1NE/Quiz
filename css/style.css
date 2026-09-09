@@ -143,6 +143,19 @@ header h1 {
     padding: 10px 0;
 }
 
+/* Full-width divider inside a quiz grid, e.g. "Prelims" / "Midterms" */
+.grid-section-header {
+    grid-column: 1 / -1;
+    margin: 10px 0 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .quiz-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
