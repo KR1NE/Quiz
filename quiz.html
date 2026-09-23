@@ -86,10 +86,10 @@
                 </div>
             </div>
 
-            <!-- Test Transition Screen (ComProg1: between Test 1 and Test 2) -->
+            <!-- Test Transition Screen (ComProg1: shown between two tests) -->
             <div id="test-transition-screen" class="screen" style="display: none;">
                 <div class="results-card">
-                    <h2>Test 1 Complete!</h2>
+                    <h2 id="transition-heading">Test 1 Complete!</h2>
                     <div class="score-circle">
                         <span class="score-number" id="test1-score">0</span>
                         <span class="score-label">out of <span id="test1-max">20</span></span>
@@ -98,7 +98,7 @@
                     <p class="transition-message">Ready for Test 2: Identification</p>
                     <p class="transition-info" id="test2-info">20 questions - Type your answers</p>
                     <div class="results-actions">
-                        <button class="btn primary-btn" onclick="startTest2()">Start Test 2</button>
+                        <button class="btn primary-btn" id="start-next-test-btn" onclick="startNextTest()">Start Test 2</button>
                     </div>
                 </div>
             </div>
@@ -153,6 +153,7 @@
     <script src="js/questions/comprog1-week5.js"></script>
     <script src="js/questions/comprog1-week6.js"></script>
     <script src="js/questions/comprog1-week7.js"></script>
+    <script src="js/questions/comprog1-week8-9.js"></script>
     <script src="js/quiz-engine.js"></script>
 </body>
 </html>
