@@ -31,7 +31,8 @@ const comprog1QuizTitles = {
     4: "ComProg1 Week 4: Input and Output with Streams",
     5: "ComProg1 Week 5: Operators for Fundamental Types",
     6: "ComProg1 Week 6: Control Flow 1 (Selection)",
-    7: "ComProg1 Week 7: Control Flow 2 (Repetition)"
+    7: "ComProg1 Week 7: Control Flow 2 (Repetition)",
+    8: "ComProg1 Week 8 & 9: Nested Loops, Conversions & the string Class"
 };
 
 // ComProg1 Quiz data mapping
@@ -42,11 +43,9 @@ const comprog1QuizData = {
     4: typeof comprog1Week4Questions !== 'undefined' ? comprog1Week4Questions : null,
     5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null,
     6: typeof comprog1Week6Questions !== 'undefined' ? comprog1Week6Questions : null,
-    7: typeof comprog1Week7Questions !== 'undefined' ? comprog1Week7Questions : null
+    7: typeof comprog1Week7Questions !== 'undefined' ? comprog1Week7Questions : null,
+    8: typeof comprog1Week8And9Questions !== 'undefined' ? comprog1Week8And9Questions : null
 };
-
-// Labels for the second test of the current ComProg1 quiz
-let test2Label = 'Identification';
 
 // State variables
 let currentSubject = 'itc';
@@ -57,12 +56,13 @@ let score = 0;
 let userAnswers = [];
 let answered = false;
 
-// ComProg1-specific state
-let currentTest = 1; // 1 = Test 1 (MC), 2 = Test 2 (ID)
-let test1Questions = [];
-let test2Questions = [];
-let test1Score = 0;
-let test1Answers = [];
+// ComProg1-specific state.
+// A ComProg1 quiz is a list of sections: [{ label, short, info, questions }].
+// Most quizzes have two of them (Multiple Choice + Identification); the
+// Week 8 & 9 quiz adds a third (True or False).
+let sections = [];
+let currentSectionIndex = 0;
+let scoreAtSectionStart = 0;
 
 // Initialize quiz on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -109,52 +109,70 @@ function initItcQuiz() {
     showQuestion();
 }
 
-// Initialize ComProg1 Quiz (with Test 1 and Test 2)
+// Build the section list for a ComProg1 quiz.
+// test1 and test2 are always present; test3 is optional, so the quizzes that
+// only have two tests are unaffected.
+function buildSections(quizData) {
+    const built = [];
+
+    built.push({
+        label: 'Multiple Choice',
+        short: 'MC',
+        questions: shuffleArray([...quizData.test1]),
+        info: quizData.test1Info || `${quizData.test1.length} questions`
+    });
+
+    const test2Label = quizData.test2Label || 'Identification';
+    built.push({
+        label: test2Label,
+        // Only "Identification" is abbreviated in the counter
+        short: test2Label === 'Identification' ? 'ID' : test2Label,
+        // Some tests (e.g. the prefix/postfix tracing drill) are deliberately
+        // ordered easy to hard, so they opt out of shuffling.
+        questions: quizData.shuffleTest2 === false
+            ? [...quizData.test2]
+            : shuffleArray([...quizData.test2]),
+        info: quizData.test2Info || `${quizData.test2.length} questions - Type your answers`
+    });
+
+    if (quizData.test3) {
+        const test3Label = quizData.test3Label || 'True or False';
+        built.push({
+            label: test3Label,
+            short: test3Label,
+            questions: quizData.shuffleTest3 === false
+                ? [...quizData.test3]
+                : shuffleArray([...quizData.test3]),
+            info: quizData.test3Info ||
+                `${quizData.test3.length} questions - Choose True or False`
+        });
+    }
+
+    return built;
+}
+
+// Initialize ComProg1 Quiz (two or three tests)
 function initComprog1Quiz() {
     // Set quiz title
     document.getElementById('quiz-title').textContent = comprog1QuizTitles[currentQuiz] || 'ComProg1 Quiz';
 
-    // Get questions based on quiz number
+    // Build the sections for this quiz
     const quizData = comprog1QuizData[currentQuiz];
-    if (quizData) {
-        test1Questions = shuffleArray([...quizData.test1]);
-        // Some tests (e.g. the prefix/postfix tracing drill) are deliberately
-        // ordered easy to hard, so they opt out of shuffling.
-        test2Questions = quizData.shuffleTest2 === false
-            ? [...quizData.test2]
-            : shuffleArray([...quizData.test2]);
-        test2Label = quizData.test2Label || 'Identification';
-    } else {
-        test1Questions = [];
-        test2Questions = [];
-        test2Label = 'Identification';
-    }
+    sections = quizData ? buildSections(quizData) : [];
 
-    // Update the transition screen copy for this quiz
-    const transitionMsg = document.querySelector('#test-transition-screen .transition-message');
-    if (transitionMsg) {
-        transitionMsg.textContent = `Ready for Test 2: ${test2Label}`;
-    }
-    const test2Info = document.getElementById('test2-info');
-    if (test2Info && quizData) {
-        test2Info.textContent = quizData.test2Info ||
-            `${test2Questions.length} questions - Type your answers`;
-    }
-
-    // Start with Test 1
-    currentTest = 1;
-    questions = test1Questions;
+    // Start with the first section
+    currentSectionIndex = 0;
+    questions = sections.length ? sections[0].questions : [];
 
     // Reset state
     currentQuestionIndex = 0;
     score = 0;
-    test1Score = 0;
+    scoreAtSectionStart = 0;
     userAnswers = [];
-    test1Answers = [];
     answered = false;
 
     // Update total questions display
-    document.getElementById('total-questions').textContent = questions.length;
+    document.getElementById('total-questions').textContent = totalQuestionCount();
 
     // Show first question
     showQuestion();
@@ -179,10 +197,44 @@ function escapeHtml(text) {
 // Prompt shown above a prefix/postfix tracing table
 const TRACE_PROMPT = 'Trace the code below. Enter the final value of x and the final value of y.';
 
-// Short tag used in the question counter, e.g. "Test 2 - ID"
-function shortTest2Label() {
-    return test2Label === 'Identification' ? 'ID' : test2Label;
+// ---- Section helpers ------------------------------------------------------
+
+// Total questions across every section of the current ComProg1 quiz
+function totalQuestionCount() {
+    return sections.reduce((sum, section) => sum + section.questions.length, 0);
 }
+
+// How many questions come before section i, so numbering runs on continuously
+function questionsBeforeSection(index) {
+    return sections
+        .slice(0, index)
+        .reduce((sum, section) => sum + section.questions.length, 0);
+}
+
+// Short tag used in the question counter, e.g. "Test 2 - ID"
+function sectionShort(index) {
+    return sections[index] ? sections[index].short : '';
+}
+
+// Which section a review entry belongs to, found by cumulative ranges
+function sectionForAnswerIndex(answerIndex) {
+    let seen = 0;
+    for (let i = 0; i < sections.length; i++) {
+        seen += sections[i].questions.length;
+        if (answerIndex < seen) return i;
+    }
+    return sections.length - 1;
+}
+
+// True when the current question is the very last one of the whole quiz, so
+// the Next button should read "See Results" instead
+function isLastQuestionOfQuiz() {
+    if (currentQuestionIndex !== questions.length - 1) return false;
+    if (currentSubject !== 'comprog1') return true;
+    return currentSectionIndex === sections.length - 1;
+}
+
+// ---- Tracing table --------------------------------------------------------
 
 // Collect the two tracing inputs (may be absent on pages without the table)
 function traceInputs() {
@@ -292,9 +344,7 @@ function submitTraceAnswer() {
     // Show next button
     const nextBtn = document.getElementById('next-btn');
     nextBtn.style.display = 'block';
-    nextBtn.textContent = currentQuestionIndex === questions.length - 1
-        ? 'See Results'
-        : 'Next Question →';
+    nextBtn.textContent = isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
 }
 
 // Append an optional explanation line under the feedback message
@@ -309,8 +359,8 @@ function appendExplanation(feedback, question) {
 // Display current question
 function showQuestion() {
     if (currentQuestionIndex >= questions.length) {
-        // For ComProg1: Check if we need to transition to Test 2
-        if (currentSubject === 'comprog1' && currentTest === 1) {
+        // For ComProg1: move on to the next section if there is one
+        if (currentSubject === 'comprog1' && currentSectionIndex < sections.length - 1) {
             showTestTransition();
             return;
         }
@@ -324,19 +374,13 @@ function showQuestion() {
     // Update progress
     updateProgress();
 
-    // Calculate question number (Test 2 continues the numbering after Test 1)
-    let displayQuestionNum = currentQuestionIndex + 1;
-    if (currentSubject === 'comprog1' && currentTest === 2) {
-        displayQuestionNum = test1Questions.length + currentQuestionIndex + 1;
-    }
-
-    // Update question number with test indicator for ComProg1
+    // Update question number with test indicator for ComProg1.
+    // Each section continues the numbering from the sections before it.
     if (currentSubject === 'comprog1') {
-        const testLabel = currentTest === 1
-            ? 'Test 1 - MC'
-            : `Test 2 - ${shortTest2Label()}`;
+        const displayQuestionNum =
+            questionsBeforeSection(currentSectionIndex) + currentQuestionIndex + 1;
         document.getElementById('question-number').textContent =
-            `${testLabel} | Question ${displayQuestionNum}`;
+            `Test ${currentSectionIndex + 1} - ${sectionShort(currentSectionIndex)} | Question ${displayQuestionNum}`;
     } else {
         document.getElementById('question-number').textContent =
             `Question ${currentQuestionIndex + 1}`;
@@ -380,18 +424,22 @@ function showQuestion() {
             showTraceQuestion(question);
         }
     } else {
-        // Show options, hide the input containers
+        // Show options, hide the input containers.
+        // True/False reuses this path so it looks just like multiple choice.
         optionsContainer.style.display = 'block';
         if (identificationContainer) {
             identificationContainer.style.display = 'none';
         }
         if (traceContainer) traceContainer.style.display = 'none';
 
-        // Shuffle options and create buttons
-        const shuffledOptions = shuffleArray([...question.options]);
+        // Shuffle options and create buttons.
+        // True/False keeps its given order so True always sits above False.
+        const displayOptions = question.type === 'true-false'
+            ? [...question.options]
+            : shuffleArray([...question.options]);
         const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-        shuffledOptions.forEach((option, index) => {
+        displayOptions.forEach((option, index) => {
             const button = document.createElement('button');
             button.className = 'option-btn';
             button.innerHTML = `
@@ -458,7 +506,7 @@ function selectAnswer(selectedOption, buttonElement) {
     // Show next button
     document.getElementById('next-btn').style.display = 'block';
     document.getElementById('next-btn').textContent =
-        currentQuestionIndex === questions.length - 1 ? 'See Results' : 'Next Question →';
+        isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
 }
 
 // Submit identification answer
@@ -507,55 +555,61 @@ function submitIdentificationAnswer() {
     // Show next button
     const nextBtn = document.getElementById('next-btn');
     nextBtn.style.display = 'block';
-
-    // Update button text based on position
-    if (currentSubject === 'comprog1') {
-        if (currentTest === 2 && currentQuestionIndex === questions.length - 1) {
-            nextBtn.textContent = 'See Results';
-        } else {
-            nextBtn.textContent = 'Next Question \u2192';
-        }
-    } else {
-        nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'See Results' : 'Next Question \u2192';
-    }
+    nextBtn.textContent = isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
 }
 
-// Show transition screen between Test 1 and Test 2 (ComProg1)
+// Show transition screen between two sections (ComProg1)
 function showTestTransition() {
     document.getElementById('question-screen').style.display = 'none';
     document.getElementById('test-transition-screen').style.display = 'block';
 
-    // Save Test 1 results
-    test1Score = score;
-    test1Answers = [...userAnswers];
+    const finished = sections[currentSectionIndex];
+    const next = sections[currentSectionIndex + 1];
 
-    // Update Test 1 score display
-    const percentage = Math.round((test1Score / test1Questions.length) * 100);
-    document.getElementById('test1-score').textContent = test1Score;
-    document.getElementById('test1-max').textContent = test1Questions.length;
+    // Score for the section that just ended
+    const sectionScore = score - scoreAtSectionStart;
+    const percentage = finished.questions.length
+        ? Math.round((sectionScore / finished.questions.length) * 100)
+        : 0;
+
+    const heading = document.getElementById('transition-heading');
+    if (heading) heading.textContent = `Test ${currentSectionIndex + 1} Complete!`;
+
+    document.getElementById('test1-score').textContent = sectionScore;
+    document.getElementById('test1-max').textContent = finished.questions.length;
     document.getElementById('test1-percentage').textContent = `${percentage}%`;
 
-    // Update progress bar to show Test 1 complete
-    const totalQuestions = test1Questions.length + test2Questions.length;
-    const test1Progress = totalQuestions
-        ? (test1Questions.length / totalQuestions) * 100
-        : 0;
-    document.getElementById('progress-bar').style.width = `${test1Progress}%`;
+    const transitionMsg = document.querySelector('#test-transition-screen .transition-message');
+    if (transitionMsg) {
+        transitionMsg.textContent = `Ready for Test ${currentSectionIndex + 2}: ${next.label}`;
+    }
+    const nextInfo = document.getElementById('test2-info');
+    if (nextInfo) nextInfo.textContent = next.info;
+
+    const startBtn = document.getElementById('start-next-test-btn');
+    if (startBtn) startBtn.textContent = `Start Test ${currentSectionIndex + 2}`;
+
+    // Fill the progress bar up to where the next section begins
+    const total = totalQuestionCount();
+    const done = questionsBeforeSection(currentSectionIndex + 1);
+    document.getElementById('progress-bar').style.width =
+        `${total ? (done / total) * 100 : 0}%`;
 }
 
-// Start Test 2 (ComProg1)
-function startTest2() {
+// Start the next section (ComProg1)
+function startNextTest() {
     document.getElementById('test-transition-screen').style.display = 'none';
     document.getElementById('question-screen').style.display = 'block';
 
-    // Switch to Test 2
-    currentTest = 2;
-    questions = test2Questions;
+    // Move on to the next section
+    currentSectionIndex++;
+    questions = sections[currentSectionIndex].questions;
     currentQuestionIndex = 0;
-    // Don't reset score - continue from Test 1
+    // Don't reset score or userAnswers - they run across every section
+    scoreAtSectionStart = score;
 
     // Update total questions display
-    document.getElementById('total-questions').textContent = test1Questions.length + test2Questions.length;
+    document.getElementById('total-questions').textContent = totalQuestionCount();
 
     // Re-enable input if needed
     const answerInput = document.getElementById('answer-input');
@@ -568,7 +622,7 @@ function startTest2() {
     }
     resetTraceInputs();
 
-    // Show first Test 2 question
+    // Show first question of the new section
     showQuestion();
 }
 
@@ -593,13 +647,11 @@ function nextQuestion() {
 // Update progress bar and text
 function updateProgress() {
     if (currentSubject === 'comprog1') {
-        // For ComProg1: Calculate progress across both tests (40 total)
-        const totalQuestions = test1Questions.length + test2Questions.length;
-        let answeredSoFar = currentQuestionIndex;
-        if (currentTest === 2) {
-            answeredSoFar = test1Questions.length + currentQuestionIndex;
-        }
-        const progress = (answeredSoFar / totalQuestions) * 100;
+        // For ComProg1: progress runs across every section
+        const totalQuestions = totalQuestionCount();
+        const answeredSoFar =
+            questionsBeforeSection(currentSectionIndex) + currentQuestionIndex;
+        const progress = totalQuestions ? (answeredSoFar / totalQuestions) * 100 : 0;
         document.getElementById('progress-bar').style.width = `${progress}%`;
         document.getElementById('current-question').textContent = answeredSoFar + 1;
         document.getElementById('total-questions').textContent = totalQuestions;
@@ -618,10 +670,10 @@ function showResults() {
     let totalQuestions, finalScore, percentage;
 
     if (currentSubject === 'comprog1') {
-        // Combine Test 1 and Test 2 results
-        totalQuestions = test1Questions.length + test2Questions.length;
-        finalScore = score; // score already includes both tests
-        percentage = Math.round((finalScore / totalQuestions) * 100);
+        // score already includes every section
+        totalQuestions = totalQuestionCount();
+        finalScore = score;
+        percentage = totalQuestions ? Math.round((finalScore / totalQuestions) * 100) : 0;
     } else {
         totalQuestions = questions.length;
         finalScore = score;
@@ -669,22 +721,15 @@ function reviewAnswers() {
     const reviewContainer = document.getElementById('review-container');
     reviewContainer.innerHTML = '';
 
-    // For ComProg1, combine Test 1 and Test 2 answers
-    let allAnswers = userAnswers;
-    if (currentSubject === 'comprog1') {
-        allAnswers = [...test1Answers, ...userAnswers.slice(test1Answers.length)];
-    }
-
-    allAnswers.forEach((answer, index) => {
+    userAnswers.forEach((answer, index) => {
         const item = document.createElement('div');
         item.className = `review-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
 
         // Add test indicator for ComProg1
         let testLabel = '';
         if (currentSubject === 'comprog1') {
-            testLabel = index < test1Questions.length
-                ? '(Test 1 - MC)'
-                : `(Test 2 - ${shortTest2Label()})`;
+            const sectionIndex = sectionForAnswerIndex(index);
+            testLabel = `(Test ${sectionIndex + 1} - ${sectionShort(sectionIndex)})`;
         }
 
         let html = `
