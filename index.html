@@ -26,6 +26,7 @@
         <div class="subject-tabs">
             <button class="tab-btn active" onclick="switchSubject('itc')" id="tab-itc">ITC</button>
             <button class="tab-btn" onclick="switchSubject('comprog1')" id="tab-comprog1">ComProg1</button>
+            <button class="tab-btn" onclick="switchSubject('theology')" id="tab-theology">Theology</button>
         </div>
 
         <!-- ITC Quizzes -->
@@ -218,6 +219,45 @@
             </div>
         </main>
 
+        <!-- Theology Quizzes -->
+        <main class="quiz-grid" id="theology-quizzes" style="display: none;">
+            <div class="quiz-card" onclick="startTheologyQuiz(1)">
+                <div class="quiz-number">Chapter 1</div>
+                <h2>Revelation in Creation</h2>
+                <p class="quiz-parts">Genesis 1-2.3 &amp; the Enuma Elish</p>
+                <ul class="quiz-topics">
+                    <li>Six Days of Creation &amp; the Parallel Structure</li>
+                    <li>The Babylonian Creation Epic</li>
+                    <li>Image &amp; Likeness, Man as God's Steward</li>
+                </ul>
+                <span class="quiz-count">15 Questions (True or False)</span>
+            </div>
+
+            <div class="quiz-card" onclick="startTheologyQuiz(2)">
+                <div class="quiz-number">Chapter 2</div>
+                <h2>Sin and Grace</h2>
+                <p class="quiz-parts">Genesis 2.4b-3.19</p>
+                <ul class="quiz-topics">
+                    <li>The Three Trees, Merism &amp; Discernment</li>
+                    <li>Sin, Its Consequences &amp; Scapegoating</li>
+                    <li>Original Sin &amp; the Grace of Forgiveness</li>
+                </ul>
+                <span class="quiz-count">15 Questions (True or False)</span>
+            </div>
+
+            <div class="quiz-card" onclick="startTheologyQuiz(3)">
+                <div class="quiz-number">Chapter 3</div>
+                <h2>Passion, Death and Resurrection</h2>
+                <p class="quiz-parts">The Paschal Mystery</p>
+                <ul class="quiz-topics">
+                    <li>Allegations Against Jesus &amp; Pilate's Sentence</li>
+                    <li>Atonement &amp; the Suffering Servant Messiah</li>
+                    <li>The Resurrection: Objections &amp; Affirmations</li>
+                </ul>
+                <span class="quiz-count">15 Questions (True or False)</span>
+            </div>
+        </main>
+
         <footer>
             <p>Based on the History of Computing Study Guide</p>
         </footer>
@@ -233,25 +273,39 @@
             window.location.href = `quiz.html?subject=comprog1&quiz=${quizNumber}`;
         }
 
+        function startTheologyQuiz(quizNumber) {
+            window.location.href = `quiz.html?subject=theology&quiz=${quizNumber}`;
+        }
+
         function switchSubject(subject) {
             const itcQuizzes = document.getElementById('itc-quizzes');
             const comprog1Quizzes = document.getElementById('comprog1-quizzes');
+            const theologyQuizzes = document.getElementById('theology-quizzes');
             const tabItc = document.getElementById('tab-itc');
             const tabComprog1 = document.getElementById('tab-comprog1');
+            const tabTheology = document.getElementById('tab-theology');
             const pageTitle = document.getElementById('page-title');
             const pageSubtitle = document.getElementById('page-subtitle');
 
-            if (subject === 'itc') {
+            itcQuizzes.style.display = 'none';
+            comprog1Quizzes.style.display = 'none';
+            theologyQuizzes.style.display = 'none';
+            tabItc.classList.remove('active');
+            tabComprog1.classList.remove('active');
+            tabTheology.classList.remove('active');
+
+            if (subject === 'theology') {
+                theologyQuizzes.style.display = 'grid';
+                tabTheology.classList.add('active');
+                pageTitle.textContent = 'Essentials of Catholic Faith and Life';
+                pageSubtitle.textContent = 'Practice Quizzes - Creation, Sin and Grace, and the Paschal Mystery';
+            } else if (subject === 'itc') {
                 itcQuizzes.style.display = 'grid';
-                comprog1Quizzes.style.display = 'none';
                 tabItc.classList.add('active');
-                tabComprog1.classList.remove('active');
                 pageTitle.textContent = 'History of Computing';
                 pageSubtitle.textContent = 'Practice Quizzes - From the Pascaline to Generative AI';
             } else {
-                itcQuizzes.style.display = 'none';
                 comprog1Quizzes.style.display = 'grid';
-                tabItc.classList.remove('active');
                 tabComprog1.classList.add('active');
                 pageTitle.textContent = 'Computer Programming 1';
                 pageSubtitle.textContent = 'Practice Quizzes - C++ Fundamentals';
@@ -261,8 +315,8 @@
         // Open the tab the visitor came back from, e.g. index.html?subject=comprog1
         document.addEventListener('DOMContentLoaded', function() {
             const subject = new URLSearchParams(window.location.search).get('subject');
-            if (subject === 'comprog1') {
-                switchSubject('comprog1');
+            if (subject === 'comprog1' || subject === 'theology') {
+                switchSubject(subject);
             }
         });
     </script>
