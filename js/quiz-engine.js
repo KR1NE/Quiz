@@ -47,6 +47,21 @@ const comprog1QuizData = {
     8: typeof comprog1Week8And9Questions !== 'undefined' ? comprog1Week8And9Questions : null
 };
 
+// Theology Quiz titles
+const theologyQuizTitles = {
+    1: "Essentials of Catholic Faith and Life - Chapter 1: Revelation in Creation",
+    2: "Essentials of Catholic Faith and Life - Chapter 2: Sin and Grace",
+    3: "Essentials of Catholic Faith and Life - Chapter 3: Passion, Death and Resurrection"
+};
+
+// Theology Quiz data mapping.
+// Each chapter is a flat list of True or False questions, like the ITC quizzes.
+const theologyQuizData = {
+    1: typeof theologyCh1Questions !== 'undefined' ? theologyCh1Questions : [],
+    2: typeof theologyCh2Questions !== 'undefined' ? theologyCh2Questions : [],
+    3: typeof theologyCh3Questions !== 'undefined' ? theologyCh3Questions : []
+};
+
 // State variables
 let currentSubject = 'itc';
 let currentQuiz = 1;
@@ -83,6 +98,8 @@ function initQuiz() {
 
     if (currentSubject === 'comprog1') {
         initComprog1Quiz();
+    } else if (currentSubject === 'theology') {
+        initTheologyQuiz();
     } else {
         initItcQuiz();
     }
@@ -95,6 +112,28 @@ function initItcQuiz() {
 
     // Get and shuffle questions
     questions = shuffleArray([...itcQuizData[currentQuiz]]);
+
+    // Reset state
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    answered = false;
+
+    // Update total questions display
+    document.getElementById('total-questions').textContent = questions.length;
+
+    // Show first question
+    showQuestion();
+}
+
+// Initialize Theology Quiz (one flat list of True or False questions per chapter)
+function initTheologyQuiz() {
+    // Set quiz title
+    document.getElementById('quiz-title').textContent =
+        theologyQuizTitles[currentQuiz] || 'Theology Quiz';
+
+    // Get and shuffle questions
+    questions = shuffleArray([...theologyQuizData[currentQuiz]]);
 
     // Reset state
     currentQuestionIndex = 0;
@@ -696,6 +735,16 @@ function showResults() {
         } else {
             message = 'Keep practicing! Review the C++ concepts and try again.';
         }
+    } else if (currentSubject === 'theology') {
+        if (percentage >= 90) {
+            message = 'Excellent! You have mastered this chapter!';
+        } else if (percentage >= 70) {
+            message = 'Great job! You have a solid grasp of the material!';
+        } else if (percentage >= 50) {
+            message = 'Good effort! Keep reviewing the key points!';
+        } else {
+            message = 'Keep studying! Go back over the chapter and try again.';
+        }
     } else {
         if (percentage >= 90) {
             message = 'Excellent! You really know your computing history!';
@@ -797,9 +846,9 @@ function restartQuiz() {
 
 // Link back to the quiz list, keeping the subject tab the user came from
 function homeUrl() {
-    return currentSubject === 'comprog1'
-        ? 'index.html?subject=comprog1'
-        : 'index.html';
+    if (currentSubject === 'comprog1') return 'index.html?subject=comprog1';
+    if (currentSubject === 'theology') return 'index.html?subject=theology';
+    return 'index.html';
 }
 
 // Go back to home page
