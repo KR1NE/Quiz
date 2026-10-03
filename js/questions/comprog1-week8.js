@@ -1,14 +1,13 @@
-// ComProg1 Week 8 & 9: Nested Loops, Conversions & the string Class
+// ComProg1 Week 8: Nested Loops
 // Test 1: Multiple Choice (20 Questions) - Items 1-20
-// Test 2: Identification (20 Questions) - Items 21-40
-// Test 3: True or False (10 Questions) - Items 41-50
+// Test 2: Identification (10 Questions) - Items 21-30
+// Test 3: True or False (10 Questions) - Items 31-40
 
 // ==========================================
 // TEST 1: MULTIPLE CHOICE (20 Questions)
 // ==========================================
-const comprog1Week8And9Test1 = [
-    // ---------- Week 8: Nested Loops ----------
-
+const comprog1Week8Test1 = [
+    // ---------- Nested loops, patterns and tracing ----------
     // What a nested loop is
     {
         type: "multiple-choice",
@@ -136,115 +135,123 @@ const comprog1Week8And9Test1 = [
         answer: "for (int j = 1; j <= 5; j++)",
         explanation: "All three parts of the header have to talk about the same counter, so j appears in the initialization, the condition and the update. Letting i creep into the condition or the update gives the two classic nested-loop bugs, the second of which leaves j unchanged and loops forever."
     },
-
-    // ---------- Week 9: Arithmetic Conversions ----------
-
-    // Why conversion happens
+    // ---------- Single-loop review before nesting ----------
     {
         type: "multiple-choice",
-        question: "What does this code display, and why?\n\nint x = 4;\ndouble y = 1.5;\ncout << x + y;",
+        question: "In the header for (int i = 1; i <= 5; i++), which part is the condition?",
+        options: ["i <= 5", "int i = 1", "i++", "cout << i"],
+        answer: "i <= 5",
+        explanation: "The condition is the test that decides whether another pass happens, and it sits between the two semicolons. int i = 1 runs once at the start and i++ runs at the end of each pass, so neither of them is the test."
+    },
+    {
+        type: "multiple-choice",
+        question: "Of the three loops reviewed at the start of Week 8, which one is the natural choice when the number of repetitions is already known?",
+        options: ["for", "while", "do-while", "None of them can count repetitions"],
+        answer: "for",
+        explanation: "It gathers the initialization, the condition and the update onto one line, which suits a fixed count such as 1 to 5. while and do-while are the better fit when the repetition depends on a condition or an event instead."
+    },
+    {
+        type: "multiple-choice",
+        question: "A program must keep asking for input until the user finally types a positive number. Which loop fits this best?",
+        options: ["do-while", "for", "A nested for loop", "while"],
+        answer: "do-while",
+        explanation: "The prompt has to appear at least once before anything can be checked, and do-while runs its body before testing. A plain while would test a number that has not been entered yet."
+    },
+
+    // ---------- Tracing the counters ----------
+    {
+        type: "multiple-choice",
+        question: "How many lines does this code print, and what is the fourth line?\n\nfor (int i = 1; i <= 3; i++)\n{\n    for (int j = 1; j <= 2; j++)\n    {\n        cout << \"i=\" << i << \", j=\" << j << endl;\n    }\n}",
         options: [
-            "5.5, because the int 4 becomes 4.0 so both operands share one type",
-            "5, because the double 1.5 becomes the int 1 before the addition",
-            "5.5, because C++ turns the double into an int and then back again",
-            "4.5, because only the fractional part of y is added on"
+            "Six lines, and the fourth is i=2, j=2",
+            "Six lines, and the fourth is i=2, j=1",
+            "Five lines, and the fourth is i=2, j=2",
+            "Three lines, so there is no fourth line"
         ],
-        answer: "5.5, because the int 4 becomes 4.0 so both operands share one type",
-        explanation: "C++ needs a common type before it can add, and it widens the int rather than throwing away the fraction. Converting 1.5 down to 1 would lose information, which is not what an arithmetic conversion does."
-    },
-
-    // Integer division
-    {
-        type: "multiple-choice",
-        question: "What does this code display?\n\nint a = 9;\nint b = 4;\ncout << a / b;",
-        options: ["2", "2.25", "2.3", "3"],
-        answer: "2",
-        explanation: "Both operands are int, so C++ performs integer division and the remainder is simply dropped. The .25 never exists in the first place, so there is nothing to round up to 3."
+        answer: "Six lines, and the fourth is i=2, j=2",
+        explanation: "The pairs come out in the order 1-1, 1-2, 2-1, 2-2, 3-1, 3-2, so three outer passes times two inner passes give six lines. Counting only the outer passes would wrongly suggest three."
     },
     {
         type: "multiple-choice",
-        question: "What does this code display?\n\nint a = 9;\ndouble b = 4.0;\ncout << a / b;",
-        options: ["2.25", "2", "2.3", "9.4"],
-        answer: "2.25",
-        explanation: "One operand is a double, so a is converted to 9.0 and the division keeps its fraction. Writing 4 instead of 4.0 would have made both operands int and produced 2."
+        question: "How many * characters does this code print in total?\n\nfor (int row = 1; row <= 4; row++)\n{\n    for (int col = 1; col <= 6; col++)\n    {\n        cout << \"*\";\n    }\n    cout << endl;\n}",
+        options: ["24", "10", "6", "4"],
+        answer: "24",
+        explanation: "Both limits are fixed, so every one of the 4 rows gets 6 stars and the work multiplies to 24. Adding the limits to get 10 would only be right if the loops sat side by side."
     },
 
-    // Assignment conversion and data loss
+    // ---------- Number patterns ----------
     {
         type: "multiple-choice",
-        question: "What does this code display?\n\ndouble weight = 72.89;\nint rounded = weight;\ncout << rounded;",
-        options: ["72", "73", "72.89", "0"],
-        answer: "72",
-        explanation: "Storing a double in an int discards the fractional part outright, so .89 is thrown away rather than rounded. The variable name is wishful thinking here, since this conversion never rounds."
-    },
-
-    // Explicit casting
-    {
-        type: "multiple-choice",
-        question: "What does this code display?\n\nint a = 3, b = 8;\ncout << (double)a / b;",
-        options: ["0.375", "0", "0.4", "3"],
-        answer: "0.375",
-        explanation: "The cast makes a a double before the division, so the whole expression is done in floating point. Without the cast it would be plain integer division and would print 0."
-    },
-
-    // Promotion of char
-    {
-        type: "multiple-choice",
-        question: "Knowing that the character 'A' has the value 65, what does this code display?\n\nchar grade = 'B';\ncout << grade << \" \" << (int)grade;",
-        options: ["B 66", "B B", "66 66", "B 65"],
-        answer: "B 66",
-        explanation: "Printed as a char it shows the letter, but the cast asks for its numeric value, and 'B' follows 'A' at 66. Only the cast changes how the same stored value is interpreted."
-    },
-
-    // ---------- Week 9: the string class ----------
-
-    // cin >> stops at whitespace
-    {
-        type: "multiple-choice",
-        question: "A program runs cin >> name; and the user types this line before pressing Enter:\n\nMaria Clara Santos\n\nWhat does name hold?",
+        question: "What does this code display?\n\nfor (int row = 1; row <= 5; row++)\n{\n    for (int col = 1; col <= row; col++)\n    {\n        cout << col << \" \";\n    }\n    cout << endl;\n}",
         options: [
-            "Maria",
-            "Maria Clara Santos",
-            "Maria Clara",
-            "Nothing, because the input has spaces in it"
+            "1, then 1 2, then 1 2 3, then 1 2 3 4, then 1 2 3 4 5",
+            "1, then 2 2, then 3 3 3, then 4 4 4 4, then 5 5 5 5 5",
+            "1 2 3 4 5 repeated on five lines",
+            "1, then 2, then 3, then 4, then 5"
         ],
-        answer: "Maria",
-        explanation: "The extraction operator stops at the first whitespace, so only the first word is taken. Capturing the whole line including the spaces is exactly what getline(cin, name) is for."
+        answer: "1, then 1 2, then 1 2 3, then 1 2 3 4, then 1 2 3 4 5",
+        explanation: "col <= row decides how many numbers a row gets, and cout << col prints the counter itself, so each row counts up from 1. Printing row instead would have repeated the same digit across the line."
     },
-
-    // Declaration, length and at()
     {
         type: "multiple-choice",
-        question: "What does this code display?\n\nstring line(4, '*');\nstring word = \"Hello\";\ncout << line << word.length() << word.at(1);",
-        options: ["****5e", "****5H", "4*5e", "****4e"],
-        answer: "****5e",
-        explanation: "string line(4, '*') builds a string of four stars, length() counts all five letters of Hello, and at(1) is the second character because indices start at 0. Reading at(1) as H would mean counting from one instead of zero."
+        question: "Which escape sequence is used in the multiplication table so that the columns line up?\n\ncout << row * col << \"\\t\";",
+        options: [
+            "\\t, which jumps to the next tab stop",
+            "\\n, which starts a new line",
+            "\\\\, which prints a single backslash",
+            "\\0, which marks the end of the text"
+        ],
+        answer: "\\t, which jumps to the next tab stop",
+        explanation: "The tab stop keeps every column starting in the same place even when the numbers have different widths. A plain space would leave the two-digit results out of line."
     },
 
-    // Concatenation
+    // ---------- Nested while, written correctly ----------
     {
         type: "multiple-choice",
-        question: "What does this code display?\n\nstring a = \"Com\";\nstring b = \"Prog\";\na += b;\ncout << a + \"1\";",
-        options: ["ComProg1", "Com1", "ComProgCom1", "ComProg 1"],
-        answer: "ComProg1",
-        explanation: "+= appends b onto a so a becomes ComProg, and + then joins the 1 on the end without altering a. Neither operator inserts a space of its own, so one would have to be added on purpose."
+        question: "What does this code display?\n\nint row = 1;\nwhile (row <= 3)\n{\n    int col = 1;\n    while (col <= 4)\n    {\n        cout << \"*\";\n        col++;\n    }\n    cout << endl;\n    row++;\n}",
+        options: [
+            "Three rows of four stars each",
+            "Only the first row of four stars, then two blank lines",
+            "Four rows of three stars each",
+            "Twelve rows of one star each"
+        ],
+        answer: "Three rows of four stars each",
+        explanation: "int col = 1; sits inside the outer loop body, so the inner counter starts over for every row. Declaring it before the outer loop is what would leave col at 5 and give only one row of stars."
     },
 
-    // find and replace
+    // ---------- break and continue ----------
     {
         type: "multiple-choice",
-        question: "What does this code display?\n\nstring text = \"I study Java\";\nint pos = text.find(\"Java\");\ntext.replace(pos, 4, \"C++\");\ncout << text;",
-        options: ["I study C++", "I study C++a", "I study Java", "C++ study Java"],
-        answer: "I study C++",
-        explanation: "find reports the position where Java begins, and replacing all 4 of its characters swaps in the new text cleanly. Passing a length of 3 instead would leave the final a behind and print I study C++a."
+        question: "What does this code display?\n\nfor (int i = 1; i <= 2; i++)\n{\n    for (int j = 1; j <= 5; j++)\n    {\n        if (j == 4)\n            continue;\n        cout << i << \",\" << j << \" \";\n    }\n    cout << endl;\n}",
+        options: [
+            "1,1 1,2 1,3 1,5 on the first line and 2,1 2,2 2,3 2,5 on the second",
+            "1,1 1,2 1,3 on the first line and 2,1 2,2 2,3 on the second",
+            "1,1 1,2 1,3 1,4 1,5 on the first line and the same for 2 on the second",
+            "1,1 1,2 1,3 only, because continue ends both loops"
+        ],
+        answer: "1,1 1,2 1,3 1,5 on the first line and 2,1 2,2 2,3 2,5 on the second",
+        explanation: "continue skips only the rest of that one pass, so j = 4 is left out but j = 5 still prints. Writing break there instead would have ended the inner loop and stopped each line at 1,3."
+    },
+
+    // ---------- Common errors ----------
+    {
+        type: "multiple-choice",
+        question: "An outer loop uses i as its counter. What goes wrong with this inner loop?\n\nfor (int j = 1; j <= 5; i++)\n{\n    cout << \"*\";\n}",
+        options: [
+            "The inner loop never ends, because j is never updated",
+            "The inner loop runs exactly five times, as intended",
+            "The inner loop is skipped, because j starts at 1",
+            "The program will not compile, because i is from the outer loop"
+        ],
+        answer: "The inner loop never ends, because j is never updated",
+        explanation: "The update changes i while the condition keeps testing j, so j stays at 1 and the test never fails. This is the wrong-update-variable mistake, the partner of writing i in the condition by accident."
     }
 ];
 
 // ==========================================
-// TEST 2: IDENTIFICATION (20 Questions)
+// TEST 2: IDENTIFICATION (10 Questions)
 // ==========================================
-const comprog1Week8And9Test2 = [
-    // ---------- Week 8: Nested Loops ----------
+const comprog1Week8Test2 = [
     {
         type: "identification",
         question: "What is the term for a loop written inside the body of another loop?",
@@ -277,12 +284,6 @@ const comprog1Week8And9Test2 = [
     },
     {
         type: "identification",
-        question: "Which escape sequence separates the values in the multiplication table so the columns line up?",
-        answer: ["\\t", "tab", "horizontal tab", "\\t (tab)", "the tab escape sequence"],
-        explanation: "Written as cout << row * col << \"\\t\"; it jumps to the next tab stop. Using a plain space instead would leave the wider numbers out of line."
-    },
-    {
-        type: "identification",
         question: "In a nested while loop, what must be done to the inner counter inside the outer loop body so that every row is drawn?",
         answer: ["reset", "reset it", "reset the counter", "resetting", "re-initialize", "reinitialize", "reset to 1"],
         explanation: "The inner counter finishes each row holding a value that already fails the test. Leaving it there means only the very first row ever gets any output."
@@ -310,70 +311,13 @@ const comprog1Week8And9Test2 = [
         question: "Of the three loops reviewed at the start of Week 8, which one tests its condition only after the body has already run once?",
         answer: ["do-while", "do while", "dowhile", "DO-WHILE", "Do-while", "do-while loop"],
         explanation: "The body comes first and the test comes afterwards, so it always runs at least once. The reviewer uses it to keep asking for a positive number until one is given."
-    },
-
-    // ---------- Week 9: Conversions and the string class ----------
-    {
-        type: "identification",
-        question: "Which header file must be included before you can declare a string object?",
-        answer: ["<string>", "string", "#include <string>", "the string header"],
-        explanation: "Written at the top as #include <string>, it brings in the standard class. Without it the compiler has no idea what the type name string refers to."
-    },
-    {
-        type: "identification",
-        question: "Which function reads an entire line of input, spaces included, into a string variable?",
-        answer: ["getline", "getline()", "getline(cin, name)", "std::getline", "getline(cin, str)"],
-        explanation: "It keeps reading until the end of the line rather than stopping at a space. That makes it the right choice for a full name or an address."
-    },
-    {
-        type: "identification",
-        question: "Besides length(), which string member function also reports how many characters a string holds?",
-        answer: ["size", "size()", "s.size()", "the size function"],
-        explanation: "The two are interchangeable, so either may appear in a program. Whichever you use, the last valid index is always one less than the count."
-    },
-    {
-        type: "identification",
-        question: "Which special value does find() return when the text it is looking for is not in the string?",
-        answer: ["string::npos", "npos", "string npos", "std::string::npos"],
-        explanation: "Comparing the result against it is how a program tells a miss from a hit. Only once the result is known not to be npos is it safe to use as a position."
-    },
-    {
-        type: "identification",
-        question: "Which string member function adds new text at a given position without deleting anything?",
-        answer: ["insert", "insert()", "s.insert()", "the insert function"],
-        explanation: "Called as insert(position, text), it pushes the existing characters along to make room. Its counterpart takes characters away instead of adding them."
-    },
-    {
-        type: "identification",
-        question: "Which string member function removes a given number of characters starting at a position?",
-        answer: ["erase", "erase()", "s.erase()", "the erase function"],
-        explanation: "Called as erase(position, count), it deletes that many characters and closes the gap. Swapping the arguments would erase from the wrong place entirely."
-    },
-    {
-        type: "identification",
-        question: "Which string member function swaps a stretch of characters for new text, given a position and a length?",
-        answer: ["replace", "replace()", "s.replace()", "the replace function"],
-        explanation: "Called as replace(position, length, text), it is usually paired with find to locate the spot first. Giving the wrong length leaves part of the old text behind."
-    },
-    {
-        type: "identification",
-        question: "Which word describes the character-by-character, dictionary-style way C++ compares two strings?",
-        answer: ["lexicographic", "lexicographical", "lexicographically", "lexicographic order", "dictionary order", "alphabetical"],
-        explanation: "It is why \"Apple\" < \"Banana\" is true, since the comparison settles on the first characters that differ. The relational operators work on strings for exactly this reason."
-    },
-    {
-        type: "identification",
-        question: "Which arithmetic type in the Week 9 list is the widest of the floating-point types?",
-        answer: ["long double", "long double type"],
-        explanation: "The list runs char, short, int, long, float, double and then long double. The first four hold whole numbers, while the last three carry fractions."
     }
 ];
 
 // ==========================================
 // TEST 3: TRUE OR FALSE (10 Questions)
 // ==========================================
-const comprog1Week8And9Test3 = [
-    // ---------- Week 8: Nested Loops ----------
+const comprog1Week8Test3 = [
     {
         type: "true-false",
         question: "In a nested loop, the outer loop completes all of its passes before the inner loop runs for the first time.",
@@ -409,53 +353,52 @@ const comprog1Week8And9Test3 = [
         answer: "True",
         explanation: "The counter ends the first row already past its limit, so later passes fail the test immediately. This is the classic nested while bug listed among the common errors."
     },
-
-    // ---------- Week 9: Conversions and the string class ----------
+    // ---------- Totals, tables and common errors ----------
     {
         type: "true-false",
-        question: "Assigning a double value to an int variable rounds it to the nearest whole number.",
+        question: "If an outer loop runs 3 times and its inner loop runs 2 times on every pass, the body of the inner loop executes 5 times in total.",
         options: ["True", "False"],
         answer: "False",
-        explanation: "The fractional part is discarded, so 99.95 is stored as 99 rather than 100. This conversion truncates and never rounds."
+        explanation: "Nested work multiplies, so the answer is 3 times 2, which is 6. Adding the two counts would only be right for two loops written one after the other."
     },
     {
         type: "true-false",
-        question: "cin >> name stops reading at the first space, so it captures only one word.",
+        question: "In the multiplication table drawn with nested loops, the value shown in each cell is row + col.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Each cell holds row * col, which is why row 5 ends with 25. Adding the counters would make the first row read 2 3 4 5 6 instead of 1 2 3 4 5."
+    },
+    {
+        type: "true-false",
+        question: "Moving cout << endl; inside the inner loop still produces one line per row.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Inside the inner loop it runs after every single character, so each mark lands on a line of its own. One line per row needs it just after the inner loop, inside the outer loop body."
+    },
+    {
+        type: "true-false",
+        question: "Writing for (int j = 1; i <= 5; j++) inside a loop that already uses i is the wrong-condition-variable error.",
         options: ["True", "False"],
         answer: "True",
-        explanation: "The extraction operator treats whitespace as the end of the input. Reading a full line with its spaces intact is what getline is for."
+        explanation: "The condition watches the outer counter while the update changes the inner one, so the inner loop no longer controls itself. All three parts of a header have to talk about the same counter."
     },
     {
         type: "true-false",
-        question: "For a string holding 5 characters, the last valid index is 5.",
-        options: ["True", "False"],
-        answer: "False",
-        explanation: "Indices begin at 0, so the last one is length() - 1, which is 4 here. Index 5 is already past the end of the string."
-    },
-    {
-        type: "true-false",
-        question: "In the expression 7 / 2.0 one operand is a double, so the result is 3.5.",
+        question: "Nested loops lead naturally into two-dimensional arrays, because both rely on row-and-column thinking.",
         options: ["True", "False"],
         answer: "True",
-        explanation: "The 7 is converted to 7.0 so the division keeps its fraction. Writing 7 / 2 instead would make both operands int and give 3."
-    },
-    {
-        type: "true-false",
-        question: "Square brackets can only read a character out of a string; they cannot change one.",
-        options: ["True", "False"],
-        answer: "False",
-        explanation: "word[0] = 'Y'; turns Hello into Yello, so the brackets work on both sides of an assignment. at() can be used the same way."
+        explanation: "Rows and columns map straight onto the two indexes such an array uses. The nested loop is simply the tool that visits every one of its positions."
     }
 ];
 
 // Export for quiz engine
-const comprog1Week8And9Questions = {
-    test1: comprog1Week8And9Test1,
-    test2: comprog1Week8And9Test2,
-    test3: comprog1Week8And9Test3,
-    title: "ComProg1 Week 8 & 9: Nested Loops, Conversions & the string Class",
+const comprog1Week8Questions = {
+    test1: comprog1Week8Test1,
+    test2: comprog1Week8Test2,
+    test3: comprog1Week8Test3,
+    title: "ComProg1 Week 8: Nested Loops",
     test2Label: "Identification",
-    test2Info: "20 questions - Type your answers",
+    test2Info: "10 questions - Type your answers",
     test3Label: "True or False",
     test3Info: "10 questions - Choose True or False"
 };
