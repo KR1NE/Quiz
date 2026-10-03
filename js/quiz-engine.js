@@ -32,7 +32,8 @@ const comprog1QuizTitles = {
     5: "ComProg1 Week 5: Operators for Fundamental Types",
     6: "ComProg1 Week 6: Control Flow 1 (Selection)",
     7: "ComProg1 Week 7: Control Flow 2 (Repetition)",
-    8: "ComProg1 Week 8 & 9: Nested Loops, Conversions & the string Class"
+    8: "ComProg1 Week 8 & 9: Nested Loops, Conversions & the string Class",
+    9: "ComProg1 Week 10: File Streams"
 };
 
 // ComProg1 Quiz data mapping
@@ -44,7 +45,8 @@ const comprog1QuizData = {
     5: typeof comprog1Week5Questions !== 'undefined' ? comprog1Week5Questions : null,
     6: typeof comprog1Week6Questions !== 'undefined' ? comprog1Week6Questions : null,
     7: typeof comprog1Week7Questions !== 'undefined' ? comprog1Week7Questions : null,
-    8: typeof comprog1Week8And9Questions !== 'undefined' ? comprog1Week8And9Questions : null
+    8: typeof comprog1Week8And9Questions !== 'undefined' ? comprog1Week8And9Questions : null,
+    9: typeof comprog1Week10Questions !== 'undefined' ? comprog1Week10Questions : null
 };
 
 // Theology Quiz titles
@@ -74,7 +76,7 @@ let answered = false;
 // ComProg1-specific state.
 // A ComProg1 quiz is a list of sections: [{ label, short, info, questions }].
 // Most quizzes have two of them (Multiple Choice + Identification); the
-// Week 8 & 9 quiz adds a third (True or False).
+// Week 8 & 9 and Week 10 quizzes add a third (True or False).
 let sections = [];
 let currentSectionIndex = 0;
 let scoreAtSectionStart = 0;
