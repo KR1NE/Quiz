@@ -1,6 +1,6 @@
 // Essentials of Catholic Faith and Life
 // Chapter 3: Passion, Death and Resurrection of Jesus - The Paschal Mystery
-// 15 True or False questions
+// 30 True or False questions
 // Source of truth: Chapter 3 - Passion, Death, and Resurrection of Jesus (pp. 43-61)
 
 const theologyCh3Questions = [
@@ -108,5 +108,110 @@ const theologyCh3Questions = [
         options: ["True", "False"],
         answer: "True",
         explanation: "Those six are set against seven affirmations, including the empty tomb, the post-resurrection appearances and the transformation of the disciples. The empty tomb and the appearances are presented as complementing each other."
+    },
+    {
+        type: "true-false",
+        question: "The passion accounts were written as neutral, on-the-spot reporting, independent of the writers' faith.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "They were written from the perspective of faith and interpreted after everything had happened, which is why they are described as history in the perspective of faith. That makes them faith-testimonies rather than detached reports."
+    },
+    {
+        type: "true-false",
+        question: "His reply to the charge of breaking the sabbath was that the law must serve the welfare and greatest good of man, rather than man being enslaved by the law for the sake of following it.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "He went beyond the trap of legalism and mere adherence to the law. The law was intended as a guide for man's affairs and a source of meaning."
+    },
+    {
+        type: "true-false",
+        question: "The purity laws of the time were applied in a way that welcomed the sick and the foreigner.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The law on purity discriminated against foreigners and the sick, labelling them unclean and ritually impure. He was the one who spoke to them, touched them, healed them and freed them from that bondage."
+    },
+    {
+        type: "true-false",
+        question: "The religious teachers of the time and Jesus grounded their authority in the same way, by citing a former teacher and the written law.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The teachers of the day derived their authority from a former teacher or from citing the written law. He rooted his in an intimate, loving relationship with the Father, which scandalized the leaders of his day."
+    },
+    {
+        type: "true-false",
+        question: "The civil authority found no guilt in him, yet still handed him over to be crucified after the crowd persisted.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Faithful to the custom of releasing a prisoner at the feast, the governor let the crowd choose between a criminal and Jesus. The crowd chose the criminal and demanded the crucifixion."
+    },
+    {
+        type: "true-false",
+        question: "He foretold his suffering more than once, and on these occasions the disciples repeatedly failed to grasp what he meant.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Through the predictions he instructed them about the fate awaiting him and about his glorification. Even the disciple who became the first head of the early church was rebuked for misunderstanding him."
+    },
+    {
+        type: "true-false",
+        question: "Because he was certain of the outcome, he faced his death without any fear.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "He had fear, but his courage and commitment stood greater. Courage is not the absence of fear; keeping and dying for one's conviction is what made the difference."
+    },
+    {
+        type: "true-false",
+        question: "Redemption in this setting means the payment of a ransom price to liberate someone held in captivity.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "In the biblical world it was often a kinsman winning the release of a family member. In biblical theology it is God delivering a people from bondage and making them his own by covenant."
+    },
+    {
+        type: "true-false",
+        question: "At the annual feast the people offered a sacrificial animal purely as a memorial, with no sense of it being a payment for sin.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The animal was slaughtered and offered at the altar as an atonement, a payment for their sins. What changed is that a person, rather than an animal, became the ultimate sacrifice."
+    },
+    {
+        type: "true-false",
+        question: "An instrument of capital punishment could never come to carry a meaning other than cruelty.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Though crucifixion was a sign of the cruelty of Roman capital punishment, the cross was transformed into a symbol of sacrifice, love and forgiveness. That death became the threshold to resurrection and eternal life."
+    },
+    {
+        type: "true-false",
+        question: "The empty tomb and the appearances after the resurrection each need the other, since on its own either one could be explained away.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Without the empty tomb, the appearances could be read as confirmations of mere hallucination. Without the appearances, the empty tomb could be read as the body having been stolen or hidden."
+    },
+    {
+        type: "true-false",
+        question: "If the preaching about the resurrection had been invented, persecution would have made no difference to whether the followers kept it up.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Persecution is presented as the acid test of a lie against a conviction. The argument is that they would not willingly and wholeheartedly trade their life for a lie."
+    },
+    {
+        type: "true-false",
+        question: "One argument against the body having been secretly removed is that the authorities could have ended the preaching at once by producing it in public.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "That would have destroyed the preachers' credibility immediately, and it did not happen. The guards were instead paid a sum of money to say the body had been stolen while they slept."
+    },
+    {
+        type: "true-false",
+        question: "Those who doubted the first reports of the appearances were pushed aside and never offered any evidence.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "One of them challenged the first reports and said he would believe only if he could touch the scars. Being able to touch the risen body is itself listed among the affirmations."
+    },
+    {
+        type: "true-false",
+        question: "The resurrection is presented as a source of faith, of meaning and of hope, with faith itself being first and foremost a divine gift.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "As meaning, it shows that life's sufferings and failures are nothing beside the glory that awaits. As hope, it answers the one through whom sin and death came with the one who brings life."
     }
 ];

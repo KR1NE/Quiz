@@ -1,6 +1,6 @@
 // Essentials of Catholic Faith and Life
 // Chapter 2: Sin and Grace
-// 15 True or False questions
+// 30 True or False questions
 // Source of truth: Creation_and_Sin_and_Grace_Notes.md (Chapter 2)
 
 const theologyCh2Questions = [
@@ -108,5 +108,110 @@ const theologyCh2Questions = [
         options: ["True", "False"],
         answer: "True",
         explanation: "God sets the rainbow in the sky when he makes his covenant, berit, with Noah and his sons after the flood. It is part of the repeating pattern of sin answered by grace."
+    },
+    {
+        type: "true-false",
+        question: "The first creation account is the older of the two narratives.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The second narrative, beginning at Genesis 2.4b, is the much older one. The difference in how and when man is created is the evidence for two different sets of writers."
+    },
+    {
+        type: "true-false",
+        question: "In the second creation account man is made first, before the rest of the creatures, which are made for his sake.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The opening scene is deliberately empty: no plant, no herb of the field, no man to till the soil. Because man comes first, the focus of reflection is man himself."
+    },
+    {
+        type: "true-false",
+        question: "The second account presents man as the summit of creation, the masterpiece and pride of God's creating.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The world came from God, but the formation of man is presented as his masterpiece. This differs from the first account, where man is made last, on the sixth day."
+    },
+    {
+        type: "true-false",
+        question: "The tree that offers immortality and the tree whose fruit is forbidden are one and the same tree.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The account distinguishes three kinds of trees, and the tree of life is not the forbidden one. It reappears at Genesis 3.22 as a remaining temptation from which danger expels the couple."
+    },
+    {
+        type: "true-false",
+        question: "The authors were precise in distinguishing the kinds of trees, and that precision is what the chapter's later argument depends on.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Genesis 2.9 draws a clear distinction between them. The failure at Genesis 3.6-7 is that the forbidden tree was confused with the tree that is good for food, so its specificity was lost."
+    },
+    {
+        type: "true-false",
+        question: "The real issue raised by the story is whether human beings need the knowledge of good and evil at all.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "We do need that knowledge, so that is not the issue. The issue is how it is acquired: by surrendering to appetite and impulse, or as the fruit of conscious and responsible discernment."
+    },
+    {
+        type: "true-false",
+        question: "Knowledge of everything is something human beings can possess fully, in the same way the Creator does.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Such knowledge is a supreme quality due only to God, who is omniscient. Humans, being limited, learn gradually and often through trial and error."
+    },
+    {
+        type: "true-false",
+        question: "Being able to stop one's appetite and desire opens up a world of values superior to anything that can satisfy natural appetite.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "This is the corollary drawn from the fact that the knowledge cannot be gained by eating a fruit. If it cannot be had that way, it does not belong to the world of our appetites."
+    },
+    {
+        type: "true-false",
+        question: "The consequences listed after the sin share the common thread of separation and alienation.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The list runs from the cursing of the serpent and the enmity with the woman to increased pain in childbearing and toil in tilling the soil. What unites them is separation and alienation."
+    },
+    {
+        type: "true-false",
+        question: "We are influenced by the inherited state of sinfulness only once we are old enough to tell right from wrong.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The influence is there from the mere fact of being born. It precedes any conscious decision of our own and any ability to discern right from wrong morally."
+    },
+    {
+        type: "true-false",
+        question: "Influenced by the evil in the world, personal sin becomes inevitable, so that we cannot not sin.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "We come into the world with a strong inclination to evil and a tendency to self-centeredness. As the personality develops we make a conscious decision to accept it and commit our own personal sins."
+    },
+    {
+        type: "true-false",
+        question: "The story is best understood as a historical account of events that actually happened in that way.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Taking the story historically creates more problems than it solves. It is a story offering an explanation: God is not the author of evil, human beings are."
+    },
+    {
+        type: "true-false",
+        question: "The heart of the doctrine is a humble affirmation of our inclination to evil, our capacity for sin, and most importantly our inescapable need of God's redeeming love and forgiveness.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The three belong together: an inclination to evil, a capacity for sin, and a need for redeeming love and forgiveness. That need is described as inescapable, which is why it is the most important of the three."
+    },
+    {
+        type: "true-false",
+        question: "The sin is best explained as a failure of knowledge, since the couple simply did not know what they were doing.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "They were supposed to maintain the differences between the trees and keep the warning in mind. Instead they surrendered to desire, were blinded by it, and deliberately chose the wrong tree."
+    },
+    {
+        type: "true-false",
+        question: "The pattern running through these chapters is that each sin is answered by an act of grace.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "A killing is answered by a protective mark, a flood by a covenant and a sign set in the sky, and divided nations by a new father of all nations. The sinfulness was never enough for God to turn away from his promises."
     }
 ];

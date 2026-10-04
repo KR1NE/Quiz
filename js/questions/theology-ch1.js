@@ -1,6 +1,6 @@
 // Essentials of Catholic Faith and Life
 // Chapter 1: Revelation in Creation
-// 15 True or False questions
+// 30 True or False questions
 // Source of truth: Creation_and_Sin_and_Grace_Notes.md (Chapter 1)
 
 const theologyCh1Questions = [
@@ -108,5 +108,110 @@ const theologyCh1Questions = [
         options: ["True", "False"],
         answer: "True",
         explanation: "God created the world according to his wisdom, freely and not out of any need. This contrasts with the Mesopotamian gods, who created out of necessity to offload their labour."
+    },
+    {
+        type: "true-false",
+        question: "The ancient Hebrew picture of the universe shows that the authors were writing accurate physical science, which is why the account can be read as physics.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The three-tier diagram shows that the authors wrote within the science of their own time. That is precisely why the account is not read as physics."
+    },
+    {
+        type: "true-false",
+        question: "In the Babylonian creation epic the world is made from the body of a slain god, while in Genesis God creates by word and will, freely.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The comparison sets creation by violence against creation by word and will. In one the world is a by-product of conflict, in the other it is deliberate, ordered and declared good."
+    },
+    {
+        type: "true-false",
+        question: "In Genesis the proper human posture before God is fear, because of God's capacity for violence and vengeance.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Fear is the posture in the Babylonian epic, where the gods are potentially destructive, vindictive and selfish. In Genesis the posture is trust, since God punishes only moral evil and is quick to forgive."
+    },
+    {
+        type: "true-false",
+        question: "Only the living and the larger parts of creation are declared good; the non-living and the small are not included.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "The repeated affirmation of goodness means creation is intrinsically and naturally good, all of it. Nothing is excluded, big or small, living or non-living."
+    },
+    {
+        type: "true-false",
+        question: "The breath that God breathes into man is the animating principle, without which the body is lifeless.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Man is made of the soil and vivified by that breath. Because it comes from God, the principle and end of man is God."
+    },
+    {
+        type: "true-false",
+        question: "The repeated five-step pattern of each creative act shows plan and purpose.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "Each act moves from announcement and command through report and evaluation to placement in a temporal framework. The regularity is the point: this creating is ordered, not accidental."
+    },
+    {
+        type: "true-false",
+        question: "In Genesis God creates out of necessity, in order to relieve himself of labour.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Creating out of necessity to offload labour is the Mesopotamian picture. The God of Genesis creates freely, deliberately and lovingly."
+    },
+    {
+        type: "true-false",
+        question: "The creation of male and female also shows the social nature of every human being.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The text affirms unity, complementarity and equality, willed from the start. It also shows that the human being is made for relationship."
+    },
+    {
+        type: "true-false",
+        question: "In the first creation account humankind is made on a day of its own, separate from the land animals.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Land animals and humankind are both made on the sixth day. The seventh day is the one on which God rests, and blesses and hallows that day."
+    },
+    {
+        type: "true-false",
+        question: "Both the Babylonian epic and Genesis begin from an already ordered world.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Both begin in primeval chaos rather than order. One opens with the formless void and darkness over the deep, the other with the mingled primeval waters."
+    },
+    {
+        type: "true-false",
+        question: "One of the core theological points is that out of gratuitous love God destined all creation in glory and paradise.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "It is the second of the four points the chapter gives as its own summary. The love is gratuitous, that is, freely given and unearned."
+    },
+    {
+        type: "true-false",
+        question: "The ancient authors of the first creation account were chiefly concerned with historical and scientific accuracy.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "They were concerned with narrating religious belief and meaning, not historical or scientific accuracy. The account is to be read for the religious message carried in its symbols and language."
+    },
+    {
+        type: "true-false",
+        question: "From man's role as God's chief steward follows a vocation of care for ourselves, the people around us, the environment and all creation.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "The chapter draws this directly from the last of its four core theological points. It is meant to be expressed in concrete advocacies."
+    },
+    {
+        type: "true-false",
+        question: "In the Babylonian epic humanity is created to share in the assembly of the gods and to be rewarded for its service.",
+        options: ["True", "False"],
+        answer: "False",
+        explanation: "Humans in that view are slaves of the gods, with no reward and no share in the divine assembly. Genesis reverses this by making man God's steward."
+    },
+    {
+        type: "true-false",
+        question: "The gods of the Babylonian epic are portrayed as potentially destructive, vindictive and selfish, while the God of Genesis is always the same, always faithful, always just and always loving.",
+        options: ["True", "False"],
+        answer: "True",
+        explanation: "In the epic a god plots to destroy his own offspring for the sake of his own comfort. This contrast in divine character is the heart of the comparison."
     }
 ];
