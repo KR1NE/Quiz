@@ -34,7 +34,9 @@ const comprog1QuizTitles = {
     7: "ComProg1 Week 7: Control Flow 2 (Repetition)",
     8: "ComProg1 Week 8: Nested Loops",
     9: "ComProg1 Week 9: Arithmetic Conversions & the string Class",
-    10: "ComProg1 Week 10: File Streams"
+    10: "ComProg1 Week 10: File Streams",
+    11: "ComProg1 Week 11: Using Functions and Classes",
+    12: "ComProg1 Week 12: User-Defined Functions"
 };
 
 // ComProg1 Quiz data mapping
@@ -48,7 +50,9 @@ const comprog1QuizData = {
     7: typeof comprog1Week7Questions !== 'undefined' ? comprog1Week7Questions : null,
     8: typeof comprog1Week8Questions !== 'undefined' ? comprog1Week8Questions : null,
     9: typeof comprog1Week9Questions !== 'undefined' ? comprog1Week9Questions : null,
-    10: typeof comprog1Week10Questions !== 'undefined' ? comprog1Week10Questions : null
+    10: typeof comprog1Week10Questions !== 'undefined' ? comprog1Week10Questions : null,
+    11: typeof comprog1Week11Questions !== 'undefined' ? comprog1Week11Questions : null,
+    12: typeof comprog1Week12Questions !== 'undefined' ? comprog1Week12Questions : null
 };
 
 // Theology Quiz titles
