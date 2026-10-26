@@ -25,6 +25,12 @@
             <div class="progress-text">
                 <span id="current-question">0</span> / <span id="total-questions">0</span>
             </div>
+
+            <!-- One chip per test part, so the taker can move between them.
+                 Rendered by renderPartTabs(); stays hidden for quizzes that
+                 only have one part. Sits outside the screens below so it
+                 survives every screen switch. -->
+            <div class="test-tabs" id="part-tabs" role="group" aria-label="Test parts" style="display: none;"></div>
         </header>
 
         <main class="quiz-container">
