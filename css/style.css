@@ -880,8 +880,110 @@ footer {
     margin-bottom: 25px;
 }
 
+/* Test Part Tabs (quiz page: one chip per test, shown when a quiz has 2+ parts) */
+.test-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 700px;
+    margin: 14px auto 0;
+}
+
+.test-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.test-tab:hover {
+    border-color: var(--text-light);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.test-tab:focus-visible {
+    outline: 2px solid var(--text-muted);
+    outline-offset: 2px;
+}
+
+.test-tab-name {
+    white-space: nowrap;
+}
+
+.test-tab-count {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.test-tab-check {
+    font-size: 0.8rem;
+    color: var(--success);
+}
+
+/* The part being taken - same treatment as .tab-btn.active on the quiz list */
+.test-tab.is-current {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg-primary);
+}
+
+.test-tab.is-current .test-tab-count,
+.test-tab.is-current .test-tab-check {
+    color: var(--bg-primary);
+    opacity: 0.85;
+}
+
+/* A finished part */
+.test-tab.is-complete {
+    border-color: var(--success);
+}
+
+.test-tab.is-current.is-complete {
+    border-color: var(--accent);
+}
+
+/* Heading above each part's items in the answer review */
+.review-part-header {
+    margin: 22px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.review-part-header:first-child {
+    margin-top: 0;
+}
+
 /* Responsive for tabs */
 @media (max-width: 768px) {
+    .test-tabs {
+        gap: 6px;
+        margin-top: 12px;
+    }
+
+    .test-tab {
+        gap: 6px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
     .subject-tabs {
         flex-direction: row;
         width: 100%;

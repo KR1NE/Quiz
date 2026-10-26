@@ -73,19 +73,23 @@ const theologyQuizData = {
 // State variables
 let currentSubject = 'itc';
 let currentQuiz = 1;
-let currentQuestionIndex = 0;
-let questions = [];
-let score = 0;
-let userAnswers = [];
-let answered = false;
 
-// ComProg1-specific state.
-// A ComProg1 quiz is a list of sections: [{ label, short, info, questions }].
-// Most quizzes have two of them (Multiple Choice + Identification); the
-// Week 8, Week 9 and Week 10 quizzes add a third (True or False).
+// Every quiz is a list of parts - "tests" in the question files - even the
+// single-part ITC and Theology ones, so the part navigation works the same way
+// everywhere. A part looks like:
+//   { label, short, info, questions, answers, optionOrder }
+// `answers` holds one record per question and starts out all null, which is
+// what lets the taker leave a part half done and come back to it. The score and
+// the progress are derived from those records rather than counted along the
+// way, so taking the parts out of order cannot desync anything.
 let sections = [];
 let currentSectionIndex = 0;
-let scoreAtSectionStart = 0;
+let currentQuestionIndex = 0;   // index within the current part
+let questions = [];             // alias of sections[currentSectionIndex].questions
+let answered = false;           // derived in showQuestion() from the stored record
+
+// Which part the transition screen is currently offering
+let transitionTargetIndex = 0;
 
 // Initialize quiz on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -113,86 +117,99 @@ function initQuiz() {
     }
 }
 
-// Initialize ITC Quiz (original behavior)
-function initItcQuiz() {
-    // Set quiz title
-    document.getElementById('quiz-title').textContent = itcQuizTitles[currentQuiz] || 'Quiz';
+// Build one part. The answer and option-order slots are allocated here, so
+// every rebuild - Try Again included - starts from a clean slate.
+function makeSection(label, short, info, sectionQuestions) {
+    return {
+        label: label,
+        short: short,
+        info: info,
+        questions: sectionQuestions,
+        answers: new Array(sectionQuestions.length).fill(null),
+        optionOrder: new Array(sectionQuestions.length).fill(null)
+    };
+}
 
-    // Get and shuffle questions
-    questions = shuffleArray([...itcQuizData[currentQuiz]]);
+// One unnamed part for the subjects that are a single flat list
+function buildSingleSection(questionList) {
+    const list = shuffleArray([...questionList]);
+    return [makeSection('Questions', '', `${list.length} questions`, list)];
+}
 
-    // Reset state
+// Shared tail of the three init functions
+function startAtFirstSection() {
+    currentSectionIndex = 0;
     currentQuestionIndex = 0;
-    score = 0;
-    userAnswers = [];
+    transitionTargetIndex = 0;
+    questions = sections.length ? sections[0].questions : [];
     answered = false;
 
-    // Update total questions display
-    document.getElementById('total-questions').textContent = questions.length;
+    // Start on the question screen rather than inheriting whichever screen was
+    // showing, so a restart does not depend on who hid what
+    showScreen('question-screen');
 
-    // Show first question
+    document.getElementById('total-questions').textContent = totalQuestionCount();
+
+    renderPartTabs();
     showQuestion();
+}
+
+// Initialize ITC Quiz (one flat list, so a single part)
+function initItcQuiz() {
+    document.getElementById('quiz-title').textContent = itcQuizTitles[currentQuiz] || 'Quiz';
+
+    sections = buildSingleSection(itcQuizData[currentQuiz] || []);
+
+    startAtFirstSection();
 }
 
 // Initialize Theology Quiz (one flat list of True or False questions per chapter)
 function initTheologyQuiz() {
-    // Set quiz title
     document.getElementById('quiz-title').textContent =
         theologyQuizTitles[currentQuiz] || 'Theology Quiz';
 
-    // Get and shuffle questions
-    questions = shuffleArray([...theologyQuizData[currentQuiz]]);
+    sections = buildSingleSection(theologyQuizData[currentQuiz] || []);
 
-    // Reset state
-    currentQuestionIndex = 0;
-    score = 0;
-    userAnswers = [];
-    answered = false;
-
-    // Update total questions display
-    document.getElementById('total-questions').textContent = questions.length;
-
-    // Show first question
-    showQuestion();
+    startAtFirstSection();
 }
 
-// Build the section list for a ComProg1 quiz.
+// Build the part list for a ComProg1 quiz.
 // test1 and test2 are always present; test3 is optional, so the quizzes that
 // only have two tests are unaffected.
 function buildSections(quizData) {
     const built = [];
 
-    built.push({
-        label: 'Multiple Choice',
-        short: 'MC',
-        questions: shuffleArray([...quizData.test1]),
-        info: quizData.test1Info || `${quizData.test1.length} questions`
-    });
+    built.push(makeSection(
+        'Multiple Choice',
+        'MC',
+        quizData.test1Info || `${quizData.test1.length} questions`,
+        shuffleArray([...quizData.test1])
+    ));
 
     const test2Label = quizData.test2Label || 'Identification';
-    built.push({
-        label: test2Label,
+    built.push(makeSection(
+        test2Label,
         // Only "Identification" is abbreviated in the counter
-        short: test2Label === 'Identification' ? 'ID' : test2Label,
+        test2Label === 'Identification' ? 'ID' : test2Label,
+        quizData.test2Info || `${quizData.test2.length} questions - Type your answers`,
         // Some tests (e.g. the prefix/postfix tracing drill) are deliberately
         // ordered easy to hard, so they opt out of shuffling.
-        questions: quizData.shuffleTest2 === false
+        quizData.shuffleTest2 === false
             ? [...quizData.test2]
-            : shuffleArray([...quizData.test2]),
-        info: quizData.test2Info || `${quizData.test2.length} questions - Type your answers`
-    });
+            : shuffleArray([...quizData.test2])
+    ));
 
-    if (quizData.test3) {
+    if (quizData.test3 && quizData.test3.length) {
         const test3Label = quizData.test3Label || 'True or False';
-        built.push({
-            label: test3Label,
-            short: test3Label,
-            questions: quizData.shuffleTest3 === false
+        built.push(makeSection(
+            test3Label,
+            test3Label,
+            quizData.test3Info ||
+                `${quizData.test3.length} questions - Choose True or False`,
+            quizData.shuffleTest3 === false
                 ? [...quizData.test3]
-                : shuffleArray([...quizData.test3]),
-            info: quizData.test3Info ||
-                `${quizData.test3.length} questions - Choose True or False`
-        });
+                : shuffleArray([...quizData.test3])
+        ));
     }
 
     return built;
@@ -200,29 +217,13 @@ function buildSections(quizData) {
 
 // Initialize ComProg1 Quiz (two or three tests)
 function initComprog1Quiz() {
-    // Set quiz title
     document.getElementById('quiz-title').textContent = comprog1QuizTitles[currentQuiz] || 'ComProg1 Quiz';
 
     // Build the sections for this quiz
     const quizData = comprog1QuizData[currentQuiz];
     sections = quizData ? buildSections(quizData) : [];
 
-    // Start with the first section
-    currentSectionIndex = 0;
-    questions = sections.length ? sections[0].questions : [];
-
-    // Reset state
-    currentQuestionIndex = 0;
-    score = 0;
-    scoreAtSectionStart = 0;
-    userAnswers = [];
-    answered = false;
-
-    // Update total questions display
-    document.getElementById('total-questions').textContent = totalQuestionCount();
-
-    // Show first question
-    showQuestion();
+    startAtFirstSection();
 }
 
 // Shuffle array (Fisher-Yates algorithm)
@@ -241,12 +242,29 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Same, for text going into a double-quoted attribute, which also needs the
+// quotes escaped - section labels come from the question files
+function escapeAttr(text) {
+    return escapeHtml(text).replace(/"/g, '&quot;');
+}
+
 // Prompt shown above a prefix/postfix tracing table
 const TRACE_PROMPT = 'Trace the code below. Enter the final value of x and the final value of y.';
 
 // ---- Section helpers ------------------------------------------------------
 
-// Total questions across every section of the current ComProg1 quiz
+// The part being taken right now
+function currentSection() {
+    return sections[currentSectionIndex] || null;
+}
+
+// The record for the question on screen, or null if it is still unanswered
+function currentAnswer() {
+    const section = currentSection();
+    return section ? section.answers[currentQuestionIndex] : null;
+}
+
+// Total questions across every section of the current quiz
 function totalQuestionCount() {
     return sections.reduce((sum, section) => sum + section.questions.length, 0);
 }
@@ -263,22 +281,54 @@ function sectionShort(index) {
     return sections[index] ? sections[index].short : '';
 }
 
-// Which section a review entry belongs to, found by cumulative ranges
-function sectionForAnswerIndex(answerIndex) {
-    let seen = 0;
-    for (let i = 0; i < sections.length; i++) {
-        seen += sections[i].questions.length;
-        if (answerIndex < seen) return i;
-    }
-    return sections.length - 1;
+// How many of section i's questions have been answered
+function sectionAnsweredCount(index) {
+    return sections[index].answers.filter(answer => answer !== null).length;
 }
 
-// True when the current question is the very last one of the whole quiz, so
-// the Next button should read "See Results" instead
-function isLastQuestionOfQuiz() {
-    if (currentQuestionIndex !== questions.length - 1) return false;
-    if (currentSubject !== 'comprog1') return true;
-    return currentSectionIndex === sections.length - 1;
+// How many of section i's questions were answered correctly.
+// Named ...Of so it cannot be shadowed by a local inside showTestTransition().
+function sectionScoreOf(index) {
+    return sections[index].answers.filter(answer => answer && answer.isCorrect).length;
+}
+
+function sectionIsComplete(index) {
+    return sectionAnsweredCount(index) === sections[index].questions.length;
+}
+
+// The question a part should reopen on, or -1 once the part is finished
+function firstUnansweredIndex(index) {
+    return sections[index].answers.indexOf(null);
+}
+
+function totalAnsweredCount() {
+    return sections.reduce((sum, section, i) => sum + sectionAnsweredCount(i), 0);
+}
+
+// The score, derived from the stored records, so it cannot be double-counted
+function totalScore() {
+    return sections.reduce((sum, section, i) => sum + sectionScoreOf(i), 0);
+}
+
+function allSectionsComplete() {
+    return sections.length > 0 && sections.every((section, i) => sectionIsComplete(i));
+}
+
+// The next part with questions left, searching forward from `from` and wrapping
+// round, since the parts can be taken in any order. -1 when everything is done.
+function nextIncompleteSectionIndex(from) {
+    for (let step = 1; step <= sections.length; step++) {
+        const index = (from + step) % sections.length;
+        if (!sectionIsComplete(index)) return index;
+    }
+    return -1;
+}
+
+// Results are only reachable once every question in every part is answered
+function nextButtonLabel() {
+    if (allSectionsComplete()) return 'See Results';
+    if (firstUnansweredIndex(currentSectionIndex) === -1) return 'Next Test →';
+    return 'Next Question →';
 }
 
 // ---- Tracing table --------------------------------------------------------
@@ -302,9 +352,11 @@ function resetTraceInputs() {
     if (traceSubmit) traceSubmit.disabled = false;
 }
 
-// Fill the tracing table for the current question
-function showTraceQuestion(question) {
-    resetTraceInputs();
+// Fill the tracing table for the current question.
+// `record` is set when the question has already been answered, in which case
+// the cells must not be cleared or focused - lockQuestionUi refills them.
+function showTraceQuestion(question, record) {
+    if (!record) resetTraceInputs();
 
     document.getElementById('trace-code').textContent = question.code;
     document.getElementById('trace-init-x').textContent = question.initialX;
@@ -334,13 +386,12 @@ function showTraceQuestion(question) {
         }
     };
 
-    finalX.focus();
+    if (!record) finalX.focus();
 }
 
 // Submit a prefix/postfix tracing answer - BOTH values must be correct
 function submitTraceAnswer() {
-    if (answered) return;
-    answered = true;
+    if (answered || currentAnswer()) return;
 
     const question = questions[currentQuestionIndex];
     const [finalX, finalY] = traceInputs();
@@ -349,49 +400,41 @@ function submitTraceAnswer() {
     const rawY = finalY ? finalY.value.trim() : '';
 
     // An empty cell is always wrong; Number('') would otherwise be 0
-    const xOk = rawX !== '' && Number(rawX) === question.answerX;
-    const yOk = rawY !== '' && Number(rawY) === question.answerY;
-    const isCorrect = xOk && yOk;
+    const xOk = traceCellIsCorrect(rawX, question.answerX);
+    const yOk = traceCellIsCorrect(rawY, question.answerY);
 
-    // Mark each cell independently so the student sees which one was wrong
-    if (finalX) finalX.classList.add(xOk ? 'cell-correct' : 'cell-incorrect');
-    if (finalY) finalY.classList.add(yOk ? 'cell-correct' : 'cell-incorrect');
-
-    // Store user answer
-    userAnswers.push({
+    recordAnswer({
         question: `${question.code}   (starting from x = ${question.initialX}, y = ${question.initialY})`,
         userAnswer: `x = ${rawX || '(blank)'}, y = ${rawY || '(blank)'}`,
         correctAnswer: `x = ${question.answerX}, y = ${question.answerY}`,
-        isCorrect: isCorrect,
-        explanation: question.explanation
-    });
+        isCorrect: xOk && yOk,
+        explanation: question.explanation,
+        // Kept so the cells can be refilled and re-marked on a revisit
+        rawX: rawX,
+        rawY: rawY
+    }, `Incorrect. Final x = ${question.answerX}, final y = ${question.answerY}`);
+}
 
-    // Update score
-    if (isCorrect) {
-        score++;
-    }
+// A blank cell never counts; otherwise compare numerically
+function traceCellIsCorrect(raw, expected) {
+    return raw !== '' && Number(raw) === expected;
+}
 
-    // Disable the inputs and the submit button
-    traceInputs().forEach(input => { input.disabled = true; });
-    const traceSubmit = document.getElementById('trace-submit-btn');
-    if (traceSubmit) traceSubmit.disabled = true;
+// ---- Recording and replaying answers --------------------------------------
 
-    // Show feedback
-    const feedback = document.getElementById('feedback');
-    if (isCorrect) {
-        feedback.className = 'feedback correct';
-        feedback.textContent = 'Correct! Well done!';
-    } else {
-        feedback.className = 'feedback incorrect';
-        feedback.textContent =
-            `Incorrect. Final x = ${question.answerX}, final y = ${question.answerY}`;
-    }
-    appendExplanation(feedback, question);
+// Store the answer in its own slot, then paint the feedback and refresh the
+// counters. Assigning - never pushing - is what keeps a revisit idempotent.
+function recordAnswer(record, incorrectMessage) {
+    const section = currentSection();
+    if (!section) return;
 
-    // Show next button
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.style.display = 'block';
-    nextBtn.textContent = isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
+    section.answers[currentQuestionIndex] = record;
+    answered = true;
+
+    renderFeedback(record, questions[currentQuestionIndex], incorrectMessage);
+    // The part counter should tick the moment the answer lands, not on Next
+    updateProgress();
+    renderNextButton();
 }
 
 // Append an optional explanation line under the feedback message
@@ -403,35 +446,92 @@ function appendExplanation(feedback, question) {
     feedback.appendChild(note);
 }
 
+// Feedback for one record. Shared by the live submit handlers and the replay
+// path, so a revisited question reads exactly as it first did.
+function renderFeedback(record, question, incorrectMessage) {
+    const feedback = document.getElementById('feedback');
+    if (record.isCorrect) {
+        feedback.className = 'feedback correct';
+        feedback.textContent = 'Correct! Well done!';
+    } else {
+        feedback.className = 'feedback incorrect';
+        feedback.textContent = incorrectMessage ||
+            `Incorrect. The correct answer is: ${record.correctAnswer}`;
+    }
+    appendExplanation(feedback, question);
+}
+
+function renderNextButton() {
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = nextButtonLabel();
+}
+
+// Put an already-answered question back the way the taker left it
+function lockQuestionUi(question, record) {
+    if (question.type === 'identification') {
+        const answerInput = document.getElementById('answer-input');
+        if (answerInput) {
+            answerInput.value = record.raw !== undefined ? record.raw : record.userAnswer;
+            answerInput.disabled = true;
+        }
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) submitBtn.disabled = true;
+    } else if (question.type === 'trace-table') {
+        const [finalX, finalY] = traceInputs();
+        if (!finalX || !finalY) return;
+        finalX.value = record.rawX;
+        finalY.value = record.rawY;
+        finalX.classList.add(
+            traceCellIsCorrect(record.rawX, question.answerX) ? 'cell-correct' : 'cell-incorrect');
+        finalY.classList.add(
+            traceCellIsCorrect(record.rawY, question.answerY) ? 'cell-correct' : 'cell-incorrect');
+        finalX.disabled = true;
+        finalY.disabled = true;
+        const traceSubmit = document.getElementById('trace-submit-btn');
+        if (traceSubmit) traceSubmit.disabled = true;
+    } else {
+        // Match by text, because the rendered order is not the data order
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.classList.add('disabled');
+            const optionText = btn.querySelector('.option-text').textContent;
+
+            if (optionText === question.answer) {
+                btn.classList.add('correct');
+            } else if (!record.isCorrect && optionText === record.userAnswer) {
+                btn.classList.add('incorrect');
+            }
+        });
+    }
+}
+
 // Display current question
 function showQuestion() {
-    if (currentQuestionIndex >= questions.length) {
-        // For ComProg1: move on to the next section if there is one
-        if (currentSubject === 'comprog1' && currentSectionIndex < sections.length - 1) {
-            showTestTransition();
-            return;
-        }
+    const section = currentSection();
+    if (!section || currentQuestionIndex >= section.questions.length) {
+        // Defensive: nextQuestion() and jumpToTest() keep the index in range
         showResults();
         return;
     }
 
     const question = questions[currentQuestionIndex];
-    answered = false;
+    const record = section.answers[currentQuestionIndex];
 
-    // Update progress
+    // The one place `answered` is set, so however the taker arrived at this
+    // question it reflects the store rather than the route taken
+    answered = record !== null;
+
+    // Update progress (also redraws the part tabs)
     updateProgress();
 
-    // Update question number with test indicator for ComProg1.
-    // Each section continues the numbering from the sections before it.
-    if (currentSubject === 'comprog1') {
-        const displayQuestionNum =
-            questionsBeforeSection(currentSectionIndex) + currentQuestionIndex + 1;
-        document.getElementById('question-number').textContent =
-            `Test ${currentSectionIndex + 1} - ${sectionShort(currentSectionIndex)} | Question ${displayQuestionNum}`;
-    } else {
-        document.getElementById('question-number').textContent =
-            `Question ${currentQuestionIndex + 1}`;
-    }
+    // Update question number. Multi-part quizzes name the part and keep the
+    // numbering running on across the parts.
+    const displayQuestionNum =
+        questionsBeforeSection(currentSectionIndex) + currentQuestionIndex + 1;
+    const alreadyAnswered = record ? ' · already answered' : '';
+    document.getElementById('question-number').textContent = sections.length > 1
+        ? `Test ${currentSectionIndex + 1} - ${sectionShort(currentSectionIndex)} | Question ${displayQuestionNum}${alreadyAnswered}`
+        : `Question ${displayQuestionNum}${alreadyAnswered}`;
 
     // Update question text
     document.getElementById('question-text').textContent =
@@ -453,8 +553,11 @@ function showQuestion() {
         if (identificationContainer) {
             identificationContainer.style.display = 'block';
             const answerInput = document.getElementById('answer-input');
-            answerInput.value = '';
-            answerInput.focus();
+            // Leave the box alone when replaying - lockQuestionUi refills it
+            if (!record) {
+                answerInput.value = '';
+                answerInput.focus();
+            }
             // Add Enter key listener
             answerInput.onkeypress = function(e) {
                 if (e.key === 'Enter' && !answered) {
@@ -468,7 +571,7 @@ function showQuestion() {
         if (identificationContainer) identificationContainer.style.display = 'none';
         if (traceContainer) {
             traceContainer.style.display = 'block';
-            showTraceQuestion(question);
+            showTraceQuestion(question, record);
         }
     } else {
         // Show options, hide the input containers.
@@ -479,11 +582,15 @@ function showQuestion() {
         }
         if (traceContainer) traceContainer.style.display = 'none';
 
-        // Shuffle options and create buttons.
+        // Freeze the option order the first time a question is shown, so that
+        // revisiting it lines the recorded answer up with what is on screen.
         // True/False keeps its given order so True always sits above False.
-        const displayOptions = question.type === 'true-false'
-            ? [...question.options]
-            : shuffleArray([...question.options]);
+        if (!section.optionOrder[currentQuestionIndex]) {
+            section.optionOrder[currentQuestionIndex] = question.type === 'true-false'
+                ? [...question.options]
+                : shuffleArray([...question.options]);
+        }
+        const displayOptions = section.optionOrder[currentQuestionIndex];
         const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
 
         displayOptions.forEach((option, index) => {
@@ -493,7 +600,7 @@ function showQuestion() {
                 <span class="option-letter">${letters[index]}</span>
                 <span class="option-text">${escapeHtml(option)}</span>
             `;
-            button.onclick = () => selectAnswer(option, button);
+            button.onclick = () => selectAnswer(option);
             optionsContainer.appendChild(button);
         });
     }
@@ -502,230 +609,265 @@ function showQuestion() {
     document.getElementById('feedback').className = 'feedback';
     document.getElementById('feedback').textContent = '';
     document.getElementById('next-btn').style.display = 'none';
+
+    // Already answered? Replay it instead of asking again
+    if (record) {
+        lockQuestionUi(question, record);
+        renderFeedback(record, question, question.type === 'trace-table'
+            ? `Incorrect. Final x = ${question.answerX}, final y = ${question.answerY}`
+            : null);
+        renderNextButton();
+    }
 }
 
-// Handle answer selection
-function selectAnswer(selectedOption, buttonElement) {
-    if (answered) return;
-    answered = true;
+// Handle answer selection (multiple choice and True or False)
+function selectAnswer(selectedOption) {
+    if (answered || currentAnswer()) return;
 
     const question = questions[currentQuestionIndex];
-    const isCorrect = selectedOption === question.answer;
-
-    // Store user answer
-    userAnswers.push({
+    const record = {
         question: question.question,
         userAnswer: selectedOption,
         correctAnswer: question.answer,
-        isCorrect: isCorrect,
+        isCorrect: selectedOption === question.answer,
         explanation: question.explanation
-    });
+    };
 
-    // Update score
-    if (isCorrect) {
-        score++;
-    }
-
-    // Disable all buttons and show correct/incorrect
-    const buttons = document.querySelectorAll('.option-btn');
-    buttons.forEach(btn => {
-        btn.classList.add('disabled');
-        const optionText = btn.querySelector('.option-text').textContent;
-
-        if (optionText === question.answer) {
-            btn.classList.add('correct');
-        } else if (btn === buttonElement && !isCorrect) {
-            btn.classList.add('incorrect');
-        }
-    });
-
-    // Show feedback
-    const feedback = document.getElementById('feedback');
-    if (isCorrect) {
-        feedback.className = 'feedback correct';
-        feedback.textContent = 'Correct! Well done!';
-    } else {
-        feedback.className = 'feedback incorrect';
-        feedback.textContent = `Incorrect. The correct answer is: ${question.answer}`;
-    }
-    appendExplanation(feedback, question);
-
-    // Show next button
-    document.getElementById('next-btn').style.display = 'block';
-    document.getElementById('next-btn').textContent =
-        isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
+    recordAnswer(record);
+    lockQuestionUi(question, record);
 }
 
 // Submit identification answer
 function submitIdentificationAnswer() {
-    if (answered) return;
-    answered = true;
+    if (answered || currentAnswer()) return;
 
     const question = questions[currentQuestionIndex];
     const answerInput = document.getElementById('answer-input');
-    const userAnswer = answerInput.value.trim();
+    const typed = answerInput.value.trim();
 
     // Check if answer is correct (case-insensitive)
     const isCorrect = question.answer.some(validAnswer =>
-        userAnswer.toLowerCase() === validAnswer.toLowerCase()
+        typed.toLowerCase() === validAnswer.toLowerCase()
     );
 
-    // Store user answer
-    userAnswers.push({
+    const record = {
         question: question.question,
-        userAnswer: userAnswer || '(no answer)',
+        userAnswer: typed || '(no answer)',
+        // The literal text, so the box can be refilled on a revisit
+        raw: typed,
         correctAnswer: question.answer[0], // Show first valid answer
         isCorrect: isCorrect,
         explanation: question.explanation
-    });
+    };
 
-    // Update score
-    if (isCorrect) {
-        score++;
-    }
-
-    // Disable input
-    answerInput.disabled = true;
-    document.getElementById('submit-btn').disabled = true;
-
-    // Show feedback
-    const feedback = document.getElementById('feedback');
-    if (isCorrect) {
-        feedback.className = 'feedback correct';
-        feedback.textContent = 'Correct! Well done!';
-    } else {
-        feedback.className = 'feedback incorrect';
-        feedback.textContent = `Incorrect. The correct answer is: ${question.answer[0]}`;
-    }
-    appendExplanation(feedback, question);
-
-    // Show next button
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.style.display = 'block';
-    nextBtn.textContent = isLastQuestionOfQuiz() ? 'See Results' : 'Next Question →';
+    recordAnswer(record);
+    lockQuestionUi(question, record);
 }
 
-// Show transition screen between two sections (ComProg1)
-function showTestTransition() {
-    document.getElementById('question-screen').style.display = 'none';
-    document.getElementById('test-transition-screen').style.display = 'block';
+// ---- Screens and navigation -----------------------------------------------
 
-    const finished = sections[currentSectionIndex];
-    const next = sections[currentSectionIndex + 1];
+// Show one of the four screens and hide the rest
+function showScreen(id) {
+    ['question-screen', 'test-transition-screen', 'results-screen', 'review-screen']
+        .forEach(screenId => {
+            const screen = document.getElementById(screenId);
+            if (screen) screen.style.display = screenId === id ? 'block' : 'none';
+        });
+}
 
-    // Score for the section that just ended
-    const sectionScore = score - scoreAtSectionStart;
+// Re-enable the typed inputs, which get disabled once a question is answered
+function resetAnswerInputs() {
+    const answerInput = document.getElementById('answer-input');
+    if (answerInput) {
+        answerInput.value = '';
+        answerInput.disabled = false;
+    }
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+    }
+    resetTraceInputs();
+}
+
+// Jump to a part, picking up at its first unanswered question. The only
+// function that moves currentSectionIndex - the part tabs and the button on
+// the transition screen both come through here.
+function jumpToTest(index) {
+    const section = sections[index];
+    if (!section || !section.questions.length) return;
+
+    const questionScreen = document.getElementById('question-screen');
+    const onQuestionScreen = questionScreen && questionScreen.style.display !== 'none';
+    // A stray click on the tab you are already on must not wipe half-typed text
+    if (onQuestionScreen && index === currentSectionIndex) return;
+
+    showScreen('question-screen');
+
+    currentSectionIndex = index;
+    questions = section.questions;
+
+    // A finished part reopens on its last question, still locked, so Next
+    // carries on to the transition screen or the results from there.
+    const next = firstUnansweredIndex(index);
+    currentQuestionIndex = next === -1 ? section.questions.length - 1 : next;
+
+    resetAnswerInputs();
+    showQuestion();
+}
+
+// Move to the next unanswered question of this part, or on to whatever is next
+// once the part is finished
+function nextQuestion() {
+    resetAnswerInputs();
+
+    if (allSectionsComplete()) {
+        showResults();
+        return;
+    }
+
+    const next = firstUnansweredIndex(currentSectionIndex);
+    if (next === -1) {
+        showTestTransition(currentSectionIndex);
+        return;
+    }
+
+    currentQuestionIndex = next;
+    showQuestion();
+}
+
+// Show the screen between two parts. Reached only by finishing a part while
+// another still has questions left, so the part named in the heading did just
+// end - free navigation only changes which part is offered next.
+function showTestTransition(finishedIndex) {
+    const target = nextIncompleteSectionIndex(finishedIndex);
+    if (target === -1) {
+        showResults();
+        return;
+    }
+    transitionTargetIndex = target;
+
+    showScreen('test-transition-screen');
+
+    const finished = sections[finishedIndex];
+    const earned = sectionScoreOf(finishedIndex);
     const percentage = finished.questions.length
-        ? Math.round((sectionScore / finished.questions.length) * 100)
+        ? Math.round((earned / finished.questions.length) * 100)
         : 0;
 
     const heading = document.getElementById('transition-heading');
-    if (heading) heading.textContent = `Test ${currentSectionIndex + 1} Complete!`;
+    if (heading) heading.textContent = `Test ${finishedIndex + 1} Complete!`;
 
-    document.getElementById('test1-score').textContent = sectionScore;
+    document.getElementById('test1-score').textContent = earned;
     document.getElementById('test1-max').textContent = finished.questions.length;
     document.getElementById('test1-percentage').textContent = `${percentage}%`;
 
+    // The offered part may already be part-done, if the taker started it earlier
+    const done = sectionAnsweredCount(target);
+    const resuming = done > 0;
+
     const transitionMsg = document.querySelector('#test-transition-screen .transition-message');
     if (transitionMsg) {
-        transitionMsg.textContent = `Ready for Test ${currentSectionIndex + 2}: ${next.label}`;
+        transitionMsg.textContent =
+            `${resuming ? 'Resume' : 'Ready for'} Test ${target + 1}: ${sections[target].label}`;
     }
     const nextInfo = document.getElementById('test2-info');
-    if (nextInfo) nextInfo.textContent = next.info;
-
+    if (nextInfo) {
+        nextInfo.textContent = resuming
+            ? `${sections[target].info} · ${done}/${sections[target].questions.length} answered`
+            : sections[target].info;
+    }
     const startBtn = document.getElementById('start-next-test-btn');
-    if (startBtn) startBtn.textContent = `Start Test ${currentSectionIndex + 2}`;
+    if (startBtn) {
+        startBtn.textContent = `${resuming ? 'Resume' : 'Start'} Test ${target + 1}`;
+    }
 
-    // Fill the progress bar up to where the next section begins
-    const total = totalQuestionCount();
-    const done = questionsBeforeSection(currentSectionIndex + 1);
-    document.getElementById('progress-bar').style.width =
-        `${total ? (done / total) * 100 : 0}%`;
+    renderPartTabs();
+    renderProgressBar();
 }
 
-// Start the next section (ComProg1)
+// Go to the part the transition screen is offering. The tabs on the same screen
+// offer every other remaining part, so this is just the suggested default.
 function startNextTest() {
-    document.getElementById('test-transition-screen').style.display = 'none';
-    document.getElementById('question-screen').style.display = 'block';
+    jumpToTest(transitionTargetIndex);
+}
 
-    // Move on to the next section
-    currentSectionIndex++;
-    questions = sections[currentSectionIndex].questions;
-    currentQuestionIndex = 0;
-    // Don't reset score or userAnswers - they run across every section
-    scoreAtSectionStart = score;
+// ---- Progress and part tabs -----------------------------------------------
 
-    // Update total questions display
+// The bar tracks how much has actually been answered, which stays correct when
+// the parts are taken out of order
+function renderProgressBar() {
+    const total = totalQuestionCount();
+    const progress = total ? (totalAnsweredCount() / total) * 100 : 0;
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+// Update progress bar, counter and part tabs
+function updateProgress() {
+    renderProgressBar();
+
+    // The counter names the question on screen
+    document.getElementById('current-question').textContent =
+        questionsBeforeSection(currentSectionIndex) + currentQuestionIndex + 1;
     document.getElementById('total-questions').textContent = totalQuestionCount();
 
-    // Re-enable input if needed
-    const answerInput = document.getElementById('answer-input');
-    if (answerInput) {
-        answerInput.disabled = false;
-    }
-    const submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) {
-        submitBtn.disabled = false;
-    }
-    resetTraceInputs();
-
-    // Show first question of the new section
-    showQuestion();
+    renderPartTabs();
 }
 
-// Move to next question
-function nextQuestion() {
-    currentQuestionIndex++;
-
-    // Re-enable identification input for next question
-    const answerInput = document.getElementById('answer-input');
-    if (answerInput) {
-        answerInput.disabled = false;
-    }
-    const submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) {
-        submitBtn.disabled = false;
-    }
-    resetTraceInputs();
-
-    showQuestion();
+function setPartTabsVisible(visible) {
+    const bar = document.getElementById('part-tabs');
+    if (bar) bar.style.display = visible && sections.length > 1 ? 'flex' : 'none';
 }
 
-// Update progress bar and text
-function updateProgress() {
-    if (currentSubject === 'comprog1') {
-        // For ComProg1: progress runs across every section
-        const totalQuestions = totalQuestionCount();
-        const answeredSoFar =
-            questionsBeforeSection(currentSectionIndex) + currentQuestionIndex;
-        const progress = totalQuestions ? (answeredSoFar / totalQuestions) * 100 : 0;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-        document.getElementById('current-question').textContent = answeredSoFar + 1;
-        document.getElementById('total-questions').textContent = totalQuestions;
-    } else {
-        const progress = ((currentQuestionIndex) / questions.length) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-        document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+// Draw the row of part tabs. Hidden for single-part quizzes (ITC, Theology),
+// where there is nothing to move between.
+function renderPartTabs() {
+    const bar = document.getElementById('part-tabs');
+    if (!bar) return;
+
+    if (sections.length < 2) {
+        bar.innerHTML = '';
+        bar.style.display = 'none';
+        return;
     }
+
+    bar.innerHTML = sections.map((section, index) => {
+        const done = sectionAnsweredCount(index);
+        const total = section.questions.length;
+        const complete = sectionIsComplete(index);
+        const current = index === currentSectionIndex;
+
+        const classes = ['test-tab'];
+        if (current) classes.push('is-current');
+        if (complete) classes.push('is-complete');
+
+        // The visible "12/20" does not describe itself out of context
+        const label = `Test ${index + 1}, ${section.label}, ${done} of ${total} answered` +
+            (current ? ', current part' : complete ? ', complete' : '');
+
+        return `
+            <button type="button" class="${classes.join(' ')}" onclick="jumpToTest(${index})"
+                    ${current ? 'aria-current="true"' : ''} aria-label="${escapeAttr(label)}">
+                <span class="test-tab-name">Test ${index + 1} · ${escapeHtml(sectionShort(index))}</span>
+                <span class="test-tab-count">${done}/${total}</span>
+                ${complete ? '<span class="test-tab-check" aria-hidden="true">✓</span>' : ''}
+            </button>
+        `;
+    }).join('');
+
+    bar.style.display = 'flex';
 }
+
+// ---- Results and review ---------------------------------------------------
 
 // Show results screen
 function showResults() {
-    document.getElementById('question-screen').style.display = 'none';
-    document.getElementById('results-screen').style.display = 'block';
+    showScreen('results-screen');
+    // Jumping back into a finished quiz from the results would be a back door
+    setPartTabsVisible(false);
 
-    let totalQuestions, finalScore, percentage;
-
-    if (currentSubject === 'comprog1') {
-        // score already includes every section
-        totalQuestions = totalQuestionCount();
-        finalScore = score;
-        percentage = totalQuestions ? Math.round((finalScore / totalQuestions) * 100) : 0;
-    } else {
-        totalQuestions = questions.length;
-        finalScore = score;
-        percentage = Math.round((finalScore / totalQuestions) * 100);
-    }
+    const totalQuestions = totalQuestionCount();
+    const finalScore = totalScore();
+    const percentage = totalQuestions ? Math.round((finalScore / totalQuestions) * 100) : 0;
 
     document.getElementById('final-score').textContent = finalScore;
     document.getElementById('max-score').textContent = totalQuestions;
@@ -772,82 +914,86 @@ function showResults() {
 
 // Review answers
 function reviewAnswers() {
-    document.getElementById('results-screen').style.display = 'none';
-    document.getElementById('review-screen').style.display = 'block';
+    showScreen('review-screen');
+    setPartTabsVisible(false);
 
     const reviewContainer = document.getElementById('review-container');
     reviewContainer.innerHTML = '';
 
-    userAnswers.forEach((answer, index) => {
-        const item = document.createElement('div');
-        item.className = `review-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
+    const multiPart = sections.length > 1;
+    let questionNumber = 0;
 
-        // Add test indicator for ComProg1
-        let testLabel = '';
-        if (currentSubject === 'comprog1') {
-            const sectionIndex = sectionForAnswerIndex(index);
-            testLabel = `(Test ${sectionIndex + 1} - ${sectionShort(sectionIndex)})`;
+    sections.forEach((section, sectionIndex) => {
+        // Group the review by part, so it reads in the quiz's own order even
+        // when the parts were answered out of order
+        if (multiPart) {
+            const header = document.createElement('div');
+            header.className = 'review-part-header';
+            header.textContent = `Test ${sectionIndex + 1} · ${section.label} — ` +
+                `${sectionScoreOf(sectionIndex)}/${section.questions.length}`;
+            reviewContainer.appendChild(header);
         }
 
-        let html = `
-            <div class="review-question">
-                <strong>Q${index + 1} ${testLabel}:</strong> ${escapeHtml(answer.question)}
-            </div>
-        `;
+        section.answers.forEach(answer => {
+            // Numbering counts every question, so it stays continuous
+            questionNumber++;
+            if (!answer) return;   // defensive: results need every question answered
 
-        if (answer.isCorrect) {
-            html += `
-                <div class="review-answer user-correct">
-                    Your answer: ${escapeHtml(answer.userAnswer)}
+            const item = document.createElement('div');
+            item.className = `review-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
+
+            const testLabel = multiPart
+                ? `(Test ${sectionIndex + 1} - ${sectionShort(sectionIndex)})`
+                : '';
+
+            let html = `
+                <div class="review-question">
+                    <strong>Q${questionNumber} ${testLabel}:</strong> ${escapeHtml(answer.question)}
                 </div>
             `;
-        } else {
-            html += `
-                <div class="review-answer user-incorrect">
-                    Your answer: ${escapeHtml(answer.userAnswer)}
-                </div>
-                <div class="review-answer correct-answer">
-                    Correct answer: ${escapeHtml(answer.correctAnswer)}
-                </div>
-            `;
-        }
 
-        if (answer.explanation) {
-            html += `
-                <div class="review-explanation">
-                    ${escapeHtml(answer.explanation)}
-                </div>
-            `;
-        }
+            if (answer.isCorrect) {
+                html += `
+                    <div class="review-answer user-correct">
+                        Your answer: ${escapeHtml(answer.userAnswer)}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="review-answer user-incorrect">
+                        Your answer: ${escapeHtml(answer.userAnswer)}
+                    </div>
+                    <div class="review-answer correct-answer">
+                        Correct answer: ${escapeHtml(answer.correctAnswer)}
+                    </div>
+                `;
+            }
 
-        item.innerHTML = html;
-        reviewContainer.appendChild(item);
+            if (answer.explanation) {
+                html += `
+                    <div class="review-explanation">
+                        ${escapeHtml(answer.explanation)}
+                    </div>
+                `;
+            }
+
+            item.innerHTML = html;
+            reviewContainer.appendChild(item);
+        });
     });
 }
 
 // Back to results from review
 function backToResults() {
-    document.getElementById('review-screen').style.display = 'none';
-    document.getElementById('results-screen').style.display = 'block';
+    showScreen('results-screen');
+    setPartTabsVisible(false);
 }
 
-// Restart the quiz
+// Restart the quiz. initQuiz() rebuilds the parts, so the recorded answers and
+// the frozen option orders are replaced with fresh ones, and it brings the
+// question screen back up.
 function restartQuiz() {
-    document.getElementById('results-screen').style.display = 'none';
-    document.getElementById('review-screen').style.display = 'none';
-    document.getElementById('test-transition-screen').style.display = 'none';
-    document.getElementById('question-screen').style.display = 'block';
-
-    // Re-enable identification input if needed
-    const answerInput = document.getElementById('answer-input');
-    if (answerInput) {
-        answerInput.disabled = false;
-    }
-    const submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) {
-        submitBtn.disabled = false;
-    }
-    resetTraceInputs();
+    resetAnswerInputs();
 
     initQuiz();
 }
