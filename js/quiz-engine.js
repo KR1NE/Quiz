@@ -36,7 +36,9 @@ const comprog1QuizTitles = {
     9: "ComProg1 Week 9: Arithmetic Conversions & the string Class",
     10: "ComProg1 Week 10: File Streams",
     11: "ComProg1 Week 11: Using Functions and Classes",
-    12: "ComProg1 Week 12: User-Defined Functions"
+    12: "ComProg1 Week 12: User-Defined Functions",
+    13: "ComProg1 Week 13: One-Dimensional Arrays",
+    14: "ComProg1 Week 14: Two-Dimensional Arrays"
 };
 
 // ComProg1 Quiz data mapping
@@ -52,7 +54,9 @@ const comprog1QuizData = {
     9: typeof comprog1Week9Questions !== 'undefined' ? comprog1Week9Questions : null,
     10: typeof comprog1Week10Questions !== 'undefined' ? comprog1Week10Questions : null,
     11: typeof comprog1Week11Questions !== 'undefined' ? comprog1Week11Questions : null,
-    12: typeof comprog1Week12Questions !== 'undefined' ? comprog1Week12Questions : null
+    12: typeof comprog1Week12Questions !== 'undefined' ? comprog1Week12Questions : null,
+    13: typeof comprog1Week13Questions !== 'undefined' ? comprog1Week13Questions : null,
+    14: typeof comprog1Week14Questions !== 'undefined' ? comprog1Week14Questions : null
 };
 
 // Theology Quiz titles
